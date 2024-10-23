@@ -1,0 +1,7 @@
+spring:
+  application:
+    name: law-firm
+
+storage:
+  local:
+    base-path: classpath:store/

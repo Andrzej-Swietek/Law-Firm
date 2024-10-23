@@ -1,0 +1,29 @@
+services:
+  #  =================== Databases ===================
+
+  postgres:
+    container_name: ms_pg_sql
+    image: postgres
+    environment:
+      POSTGRES_USER: wfiis_bazy_danych
+      POSTGRES_PASSWORD: wfiis_bazy_danych
+      PGDATA: /data/postgres
+    volumes:
+      - postgres:/data/postgres
+      - ./init-scripts:/docker-entrypoint-initdb.d/
+    ports:
+      - "5432:5432"
+    networks:
+      - microservices-net
+    restart: unless-stopped
+
+#  ================== Networks ===================
+networks:
+  microservices-net:
+    driver: bridge
+
+#  =================== Volumes ===================
+volumes:
+  postgres:
+  pgadmin:
+  mongo:
