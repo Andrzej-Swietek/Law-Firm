@@ -5,3 +5,6 @@ dokumentów do sądu
 - Informacje o sprawach aktualnie prowadzonych przez poszczególnych prawników
 - Informacje o dokumentach złożonych przez klienta w sprawie
 - Informacje o dokumentach potrzebnych w sprawie
+
+
+Documentation Link: [ http://localhost:8080/swagger-ui/index.html](http://localhost:8080/swagger-ui/index.html)

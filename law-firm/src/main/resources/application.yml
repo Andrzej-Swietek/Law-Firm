@@ -1,7 +1,23 @@
 spring:
   application:
     name: law-firm
+  datasource:
+#    url: jdbc:postgresql://localhost:5432/your_database
+    url: jdbc:postgresql://ep-young-wave-61044232.us-east-2.aws.neon.tech/neondb?sslmode=require
+    username: mr.andi321
+    password: b3PD4NeOQWTX
+    driver-class-name: org.postgresql.Driver
+  profiles:
+    active: local
+
 
 storage:
   local:
     base-path: classpath:store/
+springdoc:
+  api-docs:
+    path: /api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    operations-sorter: method
+
