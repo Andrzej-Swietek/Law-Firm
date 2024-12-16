@@ -7,6 +7,6 @@ data class Case(
     val lawyerId: Long,
     val clientId: Long,
     val status: String,
-    val documents: List<Document>
+    val documents: List<Document>?
 ) {
 }
