@@ -1,8 +1,7 @@
 package pl.swietek.law_firm.models
 
-data class Court(
+data class CourtDivision(
     val id: Int,
     val name: String,
-    val logo: String,
-    val contactDetailsId: Int,
+    val city: String
 )

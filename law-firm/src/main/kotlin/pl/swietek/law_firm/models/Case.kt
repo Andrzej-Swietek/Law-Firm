@@ -1,12 +1,14 @@
 package pl.swietek.law_firm.models
 
+
 data class Case(
-    val id: Long,
-    val title: String,
+    val id: Int,
+    val name: String,
     val description: String,
-    val lawyerId: Long,
-    val clientId: Long,
-    val status: String,
+    val responsibleLawyerId: Int,
+    val clientId: Int,
+
+    val responsibleLawyer: Lawyer? = null,
+    val client: Client? = null,
     val documents: List<Document>?
-) {
-}
+)

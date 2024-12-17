@@ -4,8 +4,7 @@ import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import pl.swietek.law_firm.models.Client
-import pl.swietek.law_firm.requests.CreateClientRequest
-import pl.swietek.law_firm.requests.UpdateClientRequest
+import pl.swietek.law_firm.requests.ClientRequest
 import pl.swietek.law_firm.services.ClientService
 
 @RestController
@@ -25,7 +24,7 @@ class ClientController(private val clientService: ClientService) {
     }
 
     @PostMapping
-    fun createClient(@RequestBody createClientRequest: CreateClientRequest) : ResponseEntity<Client> {
+    fun createClient(@RequestBody createClientRequest: ClientRequest) : ResponseEntity<Client> {
         return ResponseEntity
             .status(HttpStatus.CREATED)
             .build();
@@ -34,7 +33,7 @@ class ClientController(private val clientService: ClientService) {
     @PutMapping("/{id}")
     fun updateClient(
         @PathVariable("id") id: String,
-        @RequestBody updateClientRequest: UpdateClientRequest
+        @RequestBody updateClientRequest: ClientRequest
     ) : ResponseEntity<Client> {
         return ResponseEntity.ok().build();
     }
