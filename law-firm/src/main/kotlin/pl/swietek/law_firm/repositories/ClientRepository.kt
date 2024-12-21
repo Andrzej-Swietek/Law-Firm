@@ -2,13 +2,13 @@ package pl.swietek.law_firm.repositories
 
 import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.stereotype.Repository
-import pl.swietek.law_firm.mappers.ClientRowMapper
+import pl.swietek.law_firm.mappers.ClientMapper
 import pl.swietek.law_firm.models.Client
 
 @Repository
 class ClientRepository(private val jdbcTemplate: JdbcTemplate) {
 
-    private val clientRowMapper = ClientRowMapper()
+    private val clientRowMapper = ClientMapper()
 
     fun getClients(page: Int, size: Int): List<Client> {
         val offset = (page - 1) * size
@@ -31,7 +31,7 @@ class ClientRepository(private val jdbcTemplate: JdbcTemplate) {
         return jdbcTemplate.query(sql, clientRowMapper, size, offset)
     }
 
-    fun getClientById(clientId: Int): Client? {
+    fun getClientById(clientId: Long): Client? {
         val sql = """
             SELECT 
                 cl.*, 
@@ -76,7 +76,7 @@ class ClientRepository(private val jdbcTemplate: JdbcTemplate) {
     fun saveClient(client: Client): Client {
         val sql = """
             INSERT INTO LawFirm.client (id, first_name, last_name, email, contact_data_id)
-            VALUES (?, ?, ?, ?, ?)
+            VALUES (null, ?, ?, ?, ?)
         """.trimIndent()
 
         jdbcTemplate.update(

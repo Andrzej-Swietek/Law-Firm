@@ -21,6 +21,6 @@ data class Trial(
 )
 
 data class TrialStatus(
-    val id: Int,
+    val id: Long,
     val name: String
 )

@@ -13,6 +13,7 @@ class ClientController(private val clientService: ClientService) {
 
     @GetMapping("/all")
     fun getAllClients()  : ResponseEntity<Void> {
+
         return ResponseEntity
             .ok()
             .build()

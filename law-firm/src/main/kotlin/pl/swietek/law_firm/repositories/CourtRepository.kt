@@ -2,13 +2,13 @@ package pl.swietek.law_firm.repositories
 
 import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.stereotype.Repository
-import pl.swietek.law_firm.mappers.CourtMapper
+import pl.swietek.law_firm.mappers.CourtDivisionMapper
 import pl.swietek.law_firm.models.CourtDivision
 
 @Repository
 class CourtRepository(private val jdbcTemplate: JdbcTemplate) {
 
-    private val courtRowMapper = CourtMapper()
+    private val courtRowMapper = CourtDivisionMapper()
 
     fun getCourts(): List<CourtDivision> {
         val sql = """

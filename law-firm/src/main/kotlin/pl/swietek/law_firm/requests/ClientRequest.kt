@@ -6,7 +6,7 @@ import pl.swietek.law_firm.models.ContactDetails
 
 @Builder
 data class ClientRequest(
-    val id: Int,
+    val id: Int?,
     val firstName: String,
     val lastName: String,
     val email: String,

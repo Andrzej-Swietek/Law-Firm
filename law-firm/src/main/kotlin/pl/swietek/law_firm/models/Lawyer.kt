@@ -1,8 +1,8 @@
 package pl.swietek.law_firm.models
 
 data class Lawyer(
-    val id: Int,
-    val firstName: String,
-    val lastName: String,
+    override val id: Int,
+    override val firstName: String,
+    override val lastName: String,
     val specialization: String
-)
+): Person

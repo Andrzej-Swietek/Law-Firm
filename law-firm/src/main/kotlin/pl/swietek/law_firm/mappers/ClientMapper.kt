@@ -4,11 +4,10 @@ import org.springframework.jdbc.core.RowMapper
 import org.springframework.stereotype.Service
 import pl.swietek.law_firm.models.Client
 import pl.swietek.law_firm.models.ContactDetails
-import pl.swietek.law_firm.requests.ClientRequest
 import java.sql.ResultSet
 
 @Service
-class ClientRowMapper : RowMapper<Client> {
+class ClientMapper : RowMapper<Client> {
 
     override fun mapRow(rs: ResultSet, rowNum: Int): Client {
         val contactDetails = if (rs.getObject("cd_id") != null) {

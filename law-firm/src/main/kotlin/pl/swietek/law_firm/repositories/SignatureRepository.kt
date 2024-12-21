@@ -1,0 +1,63 @@
+package pl.swietek.law_firm.repositories
+
+import org.springframework.jdbc.core.JdbcTemplate
+import org.springframework.stereotype.Repository
+import pl.swietek.law_firm.mappers.SignatureMapper
+import pl.swietek.law_firm.models.Signature
+
+@Repository
+class SignatureRepository(
+    private val jdbcTemplate: JdbcTemplate,
+    private val signatureMapper: SignatureMapper
+) {
+    fun getSignatureById(signatureId: Int): Signature? {
+        val sql = """
+            SELECT s.*, 
+                   LawFirm.get_signature_person_data(s.id) AS person_data
+            FROM LawFirm.signature s
+            WHERE s.id = ?
+        """.trimIndent()
+
+        return jdbcTemplate.query(sql, signatureMapper, signatureId).firstOrNull()
+    }
+
+    fun saveSignature(signature: Signature): Signature {
+        val sql = """
+            INSERT INTO LawFirm.signature (id, person_id, role, required_document_id)
+            VALUES (null, ?, ?, ?)
+        """.trimIndent()
+
+        jdbcTemplate.update(
+            sql,
+            signature.personId,
+            signature.role,
+            signature.requiredDocumentId
+        )
+
+        return signature
+    }
+
+    fun updateSignature(signature: Signature): Signature {
+        val sql = """
+            UPDATE LawFirm.signature
+            SET person_id = ?, role = ?, required_document_id = ?
+            WHERE id = ?
+        """.trimIndent()
+
+        jdbcTemplate.update(
+            sql,
+            signature.personId,
+            signature.role,
+            signature.requiredDocumentId,
+            signature.id
+        )
+
+        return signature
+    }
+
+    fun deleteSignature(signatureId: Int): Boolean {
+        val sql = "DELETE FROM LawFirm.signature WHERE id = ?"
+        val rowsAffected = jdbcTemplate.update(sql, signatureId)
+        return rowsAffected > 0
+    }
+}

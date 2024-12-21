@@ -8,10 +8,10 @@ import lombok.NoArgsConstructor
 @AllArgsConstructor
 @Builder
 data class Client(
-    val id: Int,
-    val firstName: String,
-    val lastName: String,
+    override val id: Int,
+    override val firstName: String,
+    override val lastName: String,
     val email: String,
     val contactDetailsId: Int,
     val contactDetails: ContactDetails? = null
-)
+): Person

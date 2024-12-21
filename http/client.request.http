@@ -1,0 +1,24 @@
+### Get all clients
+GET http://localhost:8080/api/v1/client/all
+
+### Get Client by ID
+GET http://localhost:8080/api/v1/client/1
+
+### Create Client
+POST http://localhost:8080/api/v1/client
+Content-Type: application/json
+
+{
+  "firstName": "User",
+  "lastName": "Example",
+  "email": "email@example.com",
+  "contactDetails": {
+    "phoneNumber": "12345678",
+    "email": "email@example.com",
+    "street": "Steet",
+    "city": "City",
+    "state": "State",
+    "zipCode": "32-005",
+    "country": "Poland"
+  }
+}

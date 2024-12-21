@@ -3,6 +3,7 @@ package pl.swietek.law_firm.handlers
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.validation.FieldError
+import org.springframework.web.HttpRequestMethodNotSupportedException
 //import org.springframework.web.ErrorResponse
 import org.springframework.web.bind.MethodArgumentNotValidException
 import org.springframework.web.bind.annotation.ExceptionHandler
@@ -37,4 +38,10 @@ class GlobalExceptionHandler {
             .status(HttpStatus.BAD_REQUEST)
             .body(response)
     }
+
+//    @ExceptionHandler(HttpRequestMethodNotSupportedException::class)
+//    fun handleMethodNotSupported(exception: HttpRequestMethodNotSupportedException): ResponseEntity<String> {
+//        return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED)
+//            .body("Error: ${exception.message}")
+//    }
 }

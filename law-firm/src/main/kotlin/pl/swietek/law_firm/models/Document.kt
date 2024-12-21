@@ -1,16 +1,14 @@
 package pl.swietek.law_firm.models
 
-import java.time.LocalDate
-
 data class Document(
-    val id: Int,
-    val typeId: Int,
+    val id: Long,
+    val typeId: Long,
     val filePath: String,
     val documentType: DocumentType? = null
 )
 
 data class DocumentType(
-    val id: Int,
+    val id: Long,
     val name: String
 )
 

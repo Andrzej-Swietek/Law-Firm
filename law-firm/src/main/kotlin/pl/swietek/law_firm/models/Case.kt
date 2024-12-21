@@ -2,7 +2,7 @@ package pl.swietek.law_firm.models
 
 
 data class Case(
-    val id: Int,
+    var id: Int,
     val name: String,
     val description: String,
     val responsibleLawyerId: Int,
@@ -10,5 +10,5 @@ data class Case(
 
     val responsibleLawyer: Lawyer? = null,
     val client: Client? = null,
-    val documents: List<Document>?
+    var documents: List<Document>?
 )

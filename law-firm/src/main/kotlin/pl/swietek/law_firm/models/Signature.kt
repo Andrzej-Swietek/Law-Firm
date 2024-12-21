@@ -5,5 +5,6 @@ data class Signature(
     val personId: Int,
     val role: String,
     val requiredDocumentId: Int,
-    val requiredDocument: RequiredDocumentForTrial? = null
+    val requiredDocument: RequiredDocumentForTrial? = null,
+    val person: Person? = null
 )

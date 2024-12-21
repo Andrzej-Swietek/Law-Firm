@@ -1,7 +1,7 @@
 package pl.swietek.law_firm.models
 
 data class Appeal(
-    val id: Int,
+    var id: Int,
     val initialRulingId: Int,
     val finalRulingId: Int,
     val trialId: Int,
