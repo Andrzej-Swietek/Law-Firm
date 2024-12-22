@@ -1,4 +1,4 @@
-CREATE FUNCTION calculate_case_duration(start_date DATE, end_date DATE)
+CREATE FUNCTION LawFirm.calculate_case_duration(start_date DATE, end_date DATE)
     RETURNS INTERVAL AS $$
 BEGIN
     RETURN end_date - start_date;
@@ -7,7 +7,7 @@ $$ LANGUAGE plpgsql;
 
 
 
-CREATE OR REPLACE FUNCTION get_trial_count_for_client(client_id_param INT)
+CREATE OR REPLACE FUNCTION LawFirm.get_trial_count_for_client(client_id_param INT)
     RETURNS INT AS $$
 DECLARE
     trial_count INT;

@@ -75,13 +75,15 @@ class ClientRepository(private val jdbcTemplate: JdbcTemplate) {
 
     fun saveClient(client: Client): Client {
         val sql = """
-            INSERT INTO LawFirm.client (id, first_name, last_name, email, contact_data_id)
-            VALUES (null, ?, ?, ?, ?)
+            INSERT INTO LawFirm.client (first_name, last_name, email, contact_data_id)
+            VALUES (?, ?, ?, ?)
         """.trimIndent()
+
+        println(client.contactDetailsId)
+        println("Executing SQL: $sql")
 
         jdbcTemplate.update(
             sql,
-            client.id,
             client.firstName,
             client.lastName,
             client.email,
