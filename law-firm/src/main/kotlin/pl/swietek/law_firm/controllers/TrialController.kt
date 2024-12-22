@@ -4,6 +4,7 @@ import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import pl.swietek.law_firm.models.Trial
+import pl.swietek.law_firm.requests.TrialRequest
 import pl.swietek.law_firm.services.TrialService
 
 @RestController
@@ -36,7 +37,8 @@ class TrialController(private val trialService: TrialService) {
     }
 
     @PostMapping
-    fun saveTrial(@RequestBody trial: Trial): ResponseEntity<Trial> {
+    fun saveTrial(@RequestBody trial: TrialRequest): ResponseEntity<Trial> {
+        trial.validate()
         val savedTrial = trialService.saveTrial(trial)
         return ResponseEntity
             .status(HttpStatus.CREATED)
@@ -44,7 +46,7 @@ class TrialController(private val trialService: TrialService) {
     }
 
     @PutMapping("/{id}")
-    fun updateTrial(@PathVariable id: Int, @RequestBody trial: Trial): ResponseEntity<Trial> {
+    fun updateTrial(@PathVariable id: Int, @RequestBody trial: TrialRequest): ResponseEntity<Trial> {
         if (trial.id != id) {
             return ResponseEntity.badRequest().build()
         }

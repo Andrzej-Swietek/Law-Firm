@@ -1,9 +1,14 @@
 package pl.swietek.law_firm.repositories
 
 import org.springframework.jdbc.core.JdbcTemplate
+import org.springframework.jdbc.support.GeneratedKeyHolder
+import org.springframework.jdbc.support.KeyHolder
 import org.springframework.stereotype.Repository
 import pl.swietek.law_firm.mappers.TrialMapper
 import pl.swietek.law_firm.models.Trial
+import pl.swietek.law_firm.requests.TrialRequest
+import java.sql.Connection
+import java.sql.PreparedStatement
 
 @Repository
 class TrialRepository(
@@ -13,28 +18,8 @@ class TrialRepository(
 
     fun getTrials(): List<Trial> {
         val sql = """
-            SELECT 
-                t.id AS trial_id, 
-                t.title AS trial_title, 
-                t.description AS trial_description, 
-                t.trial_status_id AS trial_status_id, 
-                ts.name AS trial_status_name, 
-                t.client_id AS client_id, 
-                c.first_name AS client_first_name, 
-                c.last_name AS client_last_name,
-                t.lawyer_id AS lawyer_id, 
-                l.first_name AS lawyer_first_name, 
-                l.last_name AS lawyer_last_name,
-                t.judge_id AS judge_id, 
-                j.first_name AS judge_first_name, 
-                j.last_name AS judge_last_name,
-                t.date AS trial_date, 
-                t.case_id AS case_id
-            FROM LawFirm.trial t
-            LEFT JOIN LawFirm.trial_status ts ON t.trial_status_id = ts.id
-            LEFT JOIN LawFirm.client c ON t.client_id = c.id
-            LEFT JOIN LawFirm.lawyer l ON t.lawyer_id = l.id
-            LEFT JOIN LawFirm.judge j ON t.judge_id = j.id
+            SELECT * 
+            FROM LawFirm.full_data_trial
         """.trimIndent()
 
         return jdbcTemplate.query(sql, trialRowMapper)
@@ -43,28 +28,8 @@ class TrialRepository(
     fun getAllTrials(page: Int, size: Int): List<Trial> {
         val offset = (page - 1) * size
         val sql = """
-            SELECT 
-                t.id AS trial_id, 
-                t.title AS trial_title, 
-                t.description AS trial_description, 
-                t.trial_status_id AS trial_status_id, 
-                ts.name AS trial_status_name, 
-                t.client_id AS client_id, 
-                c.first_name AS client_first_name, 
-                c.last_name AS client_last_name,
-                t.lawyer_id AS lawyer_id, 
-                l.first_name AS lawyer_first_name, 
-                l.last_name AS lawyer_last_name,
-                t.judge_id AS judge_id, 
-                j.first_name AS judge_first_name, 
-                j.last_name AS judge_last_name,
-                t.date AS trial_date, 
-                t.case_id AS case_id
-            FROM LawFirm.trial t
-            LEFT JOIN LawFirm.trial_status ts ON t.trial_status_id = ts.id
-            LEFT JOIN LawFirm.client c ON t.client_id = c.id
-            LEFT JOIN LawFirm.lawyer l ON t.lawyer_id = l.id
-            LEFT JOIN LawFirm.judge j ON t.judge_id = j.id
+            SELECT * 
+            FROM LawFirm.full_data_trial
             LIMIT ? OFFSET ?
         """.trimIndent()
 
@@ -73,56 +38,45 @@ class TrialRepository(
 
     fun getTrialById(trialId: Int): Trial? {
         val sql = """
-            SELECT 
-                t.id AS trial_id, 
-                t.title AS trial_title, 
-                t.description AS trial_description, 
-                t.trial_status_id AS trial_status_id, 
-                ts.name AS trial_status_name, 
-                t.client_id AS client_id, 
-                c.first_name AS client_first_name, 
-                c.last_name AS client_last_name,
-                t.lawyer_id AS lawyer_id, 
-                l.first_name AS lawyer_first_name, 
-                l.last_name AS lawyer_last_name,
-                t.judge_id AS judge_id, 
-                j.first_name AS judge_first_name, 
-                j.last_name AS judge_last_name,
-                t.date AS trial_date, 
-                t.case_id AS case_id
-            FROM LawFirm.trial t
-            LEFT JOIN LawFirm.trial_status ts ON t.trial_status_id = ts.id
-            LEFT JOIN LawFirm.client c ON t.client_id = c.id
-            LEFT JOIN LawFirm.lawyer l ON t.lawyer_id = l.id
-            LEFT JOIN LawFirm.judge j ON t.judge_id = j.id
-            WHERE t.id = ?
+            SELECT * 
+            FROM LawFirm.full_data_trial
+            WHERE trial_id = ?
         """.trimIndent()
 
         return jdbcTemplate.query(sql, trialRowMapper, trialId).firstOrNull()
     }
 
-    fun saveTrial(trial: Trial): Trial {
+    fun saveTrial(trial: TrialRequest): Trial {
         val sql = """
             INSERT INTO LawFirm.trial (
                 title, description, trial_status_id, client_id, lawyer_id, judge_id, date, case_id
             ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ? )
         """.trimIndent()
 
-        jdbcTemplate.update(
-            sql,
-            trial.title,
-            trial.description,
-            trial.trialStatusId,
-            trial.clientId,
-            trial.lawyerId,
-            trial.judgeId,
-            trial.date,
-            trial.caseId
-        )
-        return trial
+        val keyHolder: KeyHolder = GeneratedKeyHolder()
+
+        jdbcTemplate.update({ connection: Connection ->
+            val ps: PreparedStatement = connection.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS)
+            ps.setString(1, trial.title)
+            ps.setString(2, trial.description)
+            ps.setInt(3, trial.trialStatusId)
+            ps.setInt(4, trial.clientId)
+            ps.setInt(5,  trial.lawyerId)
+            ps.setDate(7, java.sql.Date.valueOf(trial.date))
+            ps.setInt(7, trial.caseId)
+            ps
+        }, keyHolder)
+
+        val generatedId: Int = keyHolder.keyList
+            .firstOrNull()
+            ?.get("id")
+            .toString().toInt()
+            ?: throw Exception("Failed to retrieve generated ID")
+
+        return this.getTrialById(generatedId)!!
     }
 
-    fun updateTrial(trial: Trial): Trial {
+    fun updateTrial(trial: TrialRequest): Trial {
         val sql = """
             UPDATE LawFirm.trial
             SET title = ?, 
@@ -148,7 +102,7 @@ class TrialRepository(
             trial.caseId,
             trial.id
         )
-        return trial
+        return this.getTrialById(trial.id!!)!!
     }
 
     fun deleteTrial(trialId: Int): Boolean {

@@ -3,6 +3,7 @@ package pl.swietek.law_firm.services.impl
 import org.springframework.stereotype.Service
 import pl.swietek.law_firm.models.Trial
 import pl.swietek.law_firm.repositories.TrialRepository
+import pl.swietek.law_firm.requests.TrialRequest
 import pl.swietek.law_firm.services.TrialService
 
 @Service
@@ -22,11 +23,11 @@ class TrialServiceImpl (private val trialRepository: TrialRepository): TrialServ
         return trialRepository.getTrialById(trialId)
     }
 
-    override fun saveTrial(trial: Trial): Trial {
+    override fun saveTrial(trial: TrialRequest): Trial {
         return trialRepository.saveTrial(trial)
     }
 
-    override fun updateTrial(trial: Trial): Trial {
+    override fun updateTrial(trial: TrialRequest): Trial {
         return trialRepository.updateTrial(trial)
     }
 
