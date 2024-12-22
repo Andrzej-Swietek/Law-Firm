@@ -1,5 +1,6 @@
 package pl.swietek.law_firm.controllers
 
+import jakarta.validation.Valid
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
@@ -12,35 +13,48 @@ import pl.swietek.law_firm.services.ClientService
 class ClientController(private val clientService: ClientService) {
 
     @GetMapping("/all")
-    fun getAllClients()  : ResponseEntity<Void> {
-
+    fun getAllClients(
+        @RequestParam(defaultValue = "1") page: Int,
+        @RequestParam(defaultValue = "10") size: Int
+    ): ResponseEntity<List<Client>> {
+        val validatedPage = maxOf(0, page)
+        val clients = clientService.getAllClients(validatedPage, size)
         return ResponseEntity
-            .ok()
-            .build()
+            .ok(clients)
     }
 
     @GetMapping("/{id}")
-    fun getClient(@PathVariable("id") id: String) : ResponseEntity<Void> {
-        return ResponseEntity.ok().build();
+    fun getClientById(@PathVariable id: Long): ResponseEntity<Client> {
+        val client = clientService.getClientById(id)
+            ?: return ResponseEntity.notFound().build()
+        return ResponseEntity.ok(client)
     }
 
+
     @PostMapping
-    fun createClient(@RequestBody createClientRequest: ClientRequest) : ResponseEntity<Client> {
+    fun createClient(@RequestBody @Valid clientRequest: ClientRequest): ResponseEntity<Client> {
+        val createdClient = clientService.createClient(clientRequest)
         return ResponseEntity
             .status(HttpStatus.CREATED)
-            .build();
+            .body(createdClient)
     }
 
     @PutMapping("/{id}")
     fun updateClient(
-        @PathVariable("id") id: String,
-        @RequestBody updateClientRequest: ClientRequest
-    ) : ResponseEntity<Client> {
-        return ResponseEntity.ok().build();
+        @PathVariable id: Long,
+        @RequestBody @Valid clientRequest: ClientRequest
+    ): ResponseEntity<Client> {
+        if (id.toInt() != clientRequest.id) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(null)
+        }
+        val updatedClient = clientService.updateClient(clientRequest)
+        return ResponseEntity.ok(updatedClient)
     }
 
     @DeleteMapping("/{id}")
-    fun deleteClient(@PathVariable("id") id: String): ResponseEntity<Client> {
-        return ResponseEntity.ok().build();
+    fun deleteClient(@PathVariable id: Long): ResponseEntity<Void> {
+        clientService.deleteClient(id)
+        return ResponseEntity.noContent().build()
     }
 }

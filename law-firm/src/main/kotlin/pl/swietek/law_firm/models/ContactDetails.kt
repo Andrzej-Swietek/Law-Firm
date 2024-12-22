@@ -1,7 +1,7 @@
 package pl.swietek.law_firm.models
 
 data class ContactDetails(
-    val id: Int,
+    val id: Int?,
     val phoneNumber: String,
     val email: String,
     val street: String,

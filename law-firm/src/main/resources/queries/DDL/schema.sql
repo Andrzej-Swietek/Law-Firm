@@ -3,7 +3,7 @@ CREATE SCHEMA IF NOT EXISTS LawFirm;
 
 CREATE TABLE LawFirm.contact_data
 (
-    id           INT  NOT NULL PRIMARY KEY,
+    id           SERIAL  NOT NULL PRIMARY KEY,
     phone_number TEXT NOT NULL,
     email        TEXT NOT NULL,
     street       TEXT NOT NULL,
@@ -15,7 +15,7 @@ CREATE TABLE LawFirm.contact_data
 
 CREATE TABLE LawFirm.client
 (
-    id              INT  NOT NULL PRIMARY KEY,
+    id              SERIAL  NOT NULL PRIMARY KEY,
     first_name      TEXT NOT NULL,
     last_name       TEXT NOT NULL,
     email           TEXT NOT NULL,
@@ -25,7 +25,7 @@ CREATE TABLE LawFirm.client
 
 CREATE TABLE LawFirm.lawyer
 (
-    id             INT  NOT NULL PRIMARY KEY,
+    id             SERIAL  NOT NULL PRIMARY KEY,
     first_name     TEXT NOT NULL,
     last_name      TEXT NOT NULL,
     specialization TEXT NOT NULL
@@ -33,14 +33,14 @@ CREATE TABLE LawFirm.lawyer
 
 CREATE TABLE LawFirm.court_division
 (
-    id   INT  NOT NULL PRIMARY KEY,
+    id   SERIAL  NOT NULL PRIMARY KEY,
     name TEXT NOT NULL,
     city TEXT NOT NULL
 );
 
 CREATE TABLE LawFirm.judge
 (
-    id                INT  NOT NULL PRIMARY KEY,
+    id                SERIAL  NOT NULL PRIMARY KEY,
     first_name        TEXT NOT NULL,
     last_name         TEXT NOT NULL,
     court_division_id INT  NOT NULL,
@@ -49,19 +49,19 @@ CREATE TABLE LawFirm.judge
 
 CREATE TABLE LawFirm.trial_status
 (
-    id   INT  NOT NULL PRIMARY KEY,
+    id   SERIAL  NOT NULL PRIMARY KEY,
     name TEXT NOT NULL
 );
 
 CREATE TABLE LawFirm.document_types
 (
-    id   INT  NOT NULL PRIMARY KEY,
+    id   SERIAL  NOT NULL PRIMARY KEY,
     name TEXT NOT NULL UNIQUE
 );
 
 CREATE TABLE LawFirm.document
 (
-    id        INT  NOT NULL PRIMARY KEY,
+    id        SERIAL  NOT NULL PRIMARY KEY,
     type_id   INT  NOT NULL,
     file_path TEXT NOT NULL,
     CONSTRAINT document_type_fk FOREIGN KEY (type_id) REFERENCES LawFirm.document_types (id)
@@ -69,7 +69,7 @@ CREATE TABLE LawFirm.document
 
 CREATE TABLE LawFirm.case
 (
-    id                    INT  NOT NULL PRIMARY KEY,
+    id                    SERIAL  NOT NULL PRIMARY KEY,
     name                  TEXT NOT NULL,
     description           TEXT NOT NULL,
     responsible_lawyer_id INT  NOT NULL,
@@ -80,7 +80,7 @@ CREATE TABLE LawFirm.case
 
 CREATE TABLE LawFirm.trial
 (
-    id              INT  NOT NULL PRIMARY KEY,
+    id              SERIAL  NOT NULL PRIMARY KEY,
     title           TEXT NOT NULL,
     description     TEXT NOT NULL,
     trial_status_id INT  NOT NULL,
@@ -98,7 +98,7 @@ CREATE TABLE LawFirm.trial
 
 CREATE TABLE LawFirm.ruling
 (
-    id                INT     NOT NULL PRIMARY KEY,
+    id                SERIAL     NOT NULL PRIMARY KEY,
     is_final          BOOLEAN NOT NULL,
     content           TEXT    NOT NULL,
     trial_id          INT     NOT NULL,
@@ -108,7 +108,7 @@ CREATE TABLE LawFirm.ruling
 
 CREATE TABLE LawFirm.appeal
 (
-    id                INT NOT NULL PRIMARY KEY,
+    id                SERIAL NOT NULL PRIMARY KEY,
     initial_ruling_id INT NOT NULL,
     final_ruling_id   INT NOT NULL,
     trial_id          INT NOT NULL,
@@ -119,7 +119,7 @@ CREATE TABLE LawFirm.appeal
 
 CREATE TABLE LawFirm.required_documents_for_trial
 (
-    id          INT NOT NULL PRIMARY KEY,
+    id          SERIAL NOT NULL PRIMARY KEY,
     trial_id    INT NOT NULL,
     document_id INT NOT NULL,
     CONSTRAINT required_documents_trial_fk FOREIGN KEY (trial_id) REFERENCES LawFirm.trial (id),
@@ -128,7 +128,7 @@ CREATE TABLE LawFirm.required_documents_for_trial
 
 CREATE TABLE LawFirm.signature
 (
-    id                   INT  NOT NULL PRIMARY KEY,
+    id                   SERIAL  NOT NULL PRIMARY KEY,
     person_id            INT  NOT NULL,
     role                 TEXT NOT NULL CHECK (role IN ('client', 'lawyer', 'judge')),
     required_document_id INT  NOT NULL,
@@ -137,7 +137,7 @@ CREATE TABLE LawFirm.signature
 
 CREATE TABLE LawFirm.decision
 (
-    id          INT  NOT NULL PRIMARY KEY,
+    id          SERIAL  NOT NULL PRIMARY KEY,
     name        TEXT NOT NULL,
     description TEXT NOT NULL,
     date        DATE NOT NULL,
