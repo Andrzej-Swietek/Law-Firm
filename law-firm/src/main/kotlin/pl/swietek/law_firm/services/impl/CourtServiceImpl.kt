@@ -29,8 +29,10 @@ class CourtServiceImpl(
             name = updatedCourt.name,
             city = updatedCourt.city,
         )
-        return this.saveCourt(mergedCourt)
+        return this.courtDivisionRepository.updateCourtDivision(mergedCourt)
     }
 
-    override fun deleteCourt(id: Int) {}
+    override fun deleteCourt(id: Int) {
+        this.courtDivisionRepository.deleteCourtDivision(id)
+    }
 }

@@ -3,6 +3,7 @@ package pl.swietek.law_firm.controllers
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import pl.swietek.law_firm.models.Judge
+import pl.swietek.law_firm.requests.JudgeRequest
 import pl.swietek.law_firm.services.JudgeService
 
 @RestController
@@ -20,11 +21,11 @@ class JudgeController(private val judgeService: JudgeService) {
     }
 
     @PostMapping
-    fun createJudge(@RequestBody judge: Judge): ResponseEntity<Judge> =
+    fun createJudge(@RequestBody judge: JudgeRequest): ResponseEntity<Judge> =
         ResponseEntity.ok(judgeService.saveJudge(judge))
 
     @PutMapping("/{id}")
-    fun updateJudge(@PathVariable id: Int, @RequestBody judge: Judge): ResponseEntity<Judge> =
+    fun updateJudge(@PathVariable id: Int, @RequestBody judge: JudgeRequest): ResponseEntity<Judge> =
         ResponseEntity.ok(judgeService.updateJudge(judge.copy(id = id)))
 
     @DeleteMapping("/{id}")

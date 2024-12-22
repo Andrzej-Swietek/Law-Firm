@@ -21,7 +21,7 @@ class CourtDivisionRepository(private val jdbcTemplate: JdbcTemplate) {
     }
 
     fun saveCourtDivision(courtDivision: CourtDivision): CourtDivision {
-        val sql = "INSERT INTO LawFirm.court_division (id, name, city) VALUES (null, ?, ?)"
+        val sql = "INSERT INTO LawFirm.court_division (name, city) VALUES ( ?, ?)"
         jdbcTemplate.update(sql, courtDivision.name, courtDivision.city)
         return courtDivision
     }

@@ -1,9 +1,14 @@
 package pl.swietek.law_firm.repositories
 
 import org.springframework.jdbc.core.JdbcTemplate
+import org.springframework.jdbc.support.GeneratedKeyHolder
+import org.springframework.jdbc.support.KeyHolder
 import org.springframework.stereotype.Repository
 import pl.swietek.law_firm.mappers.JudgeMapper
 import pl.swietek.law_firm.models.Judge
+import pl.swietek.law_firm.requests.JudgeRequest
+import java.sql.Connection
+import java.sql.PreparedStatement
 
 @Repository
 class JudgeRepository(private val jdbcTemplate: JdbcTemplate) {
@@ -43,23 +48,32 @@ class JudgeRepository(private val jdbcTemplate: JdbcTemplate) {
         return jdbcTemplate.query(sql, judgeRowMapper, judgeId).firstOrNull()
     }
 
-    fun saveJudge(judge: Judge): Judge {
+    fun saveJudge(judge: JudgeRequest): Judge {
         val sql = """
-            INSERT INTO LawFirm.judge (id, first_name, last_name, court_division_id)
-            VALUES (?, ?, ?, ?)
+            INSERT INTO LawFirm.judge (first_name, last_name, court_division_id)
+            VALUES ( ?, ?, ?)
         """.trimIndent()
 
-        jdbcTemplate.update(
-            sql,
-            judge.id,
-            judge.firstName,
-            judge.lastName,
-            judge.courtDivision?.id
-        )
-        return judge
+        val keyHolder: KeyHolder = GeneratedKeyHolder()
+
+        jdbcTemplate.update({ connection: Connection ->
+            val ps: PreparedStatement = connection.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS)
+            ps.setString(1, judge.firstName)
+            ps.setString(2, judge.lastName)
+            ps.setInt(3, judge.courtDivisionId)
+            ps
+        }, keyHolder)
+
+        val generatedId: Int = keyHolder.keyList
+            .firstOrNull()
+            ?.get("id")
+            .toString().toInt()
+            ?: throw Exception("Failed to retrieve generated ID")
+
+        return this.getJudgeById(generatedId)!!
     }
 
-    fun updateJudge(judge: Judge): Judge {
+    fun updateJudge(judge: JudgeRequest): Judge {
         val sql = """
             UPDATE LawFirm.judge
             SET first_name = ?, last_name = ?, court_division_id = ?
@@ -70,10 +84,10 @@ class JudgeRepository(private val jdbcTemplate: JdbcTemplate) {
             sql,
             judge.firstName,
             judge.lastName,
-            judge.courtDivision?.id,
+            judge.courtDivisionId,
             judge.id
         )
-        return judge
+        return this.getJudgeById(judge.id!!)!!
     }
 
     fun deleteJudge(judgeId: Int): Boolean {
