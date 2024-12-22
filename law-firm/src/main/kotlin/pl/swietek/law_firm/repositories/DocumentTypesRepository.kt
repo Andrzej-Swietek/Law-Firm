@@ -31,8 +31,8 @@ class DocumentTypesRepository(private val jdbcTemplate: JdbcTemplate) {
 
     fun saveDocumentType(documentType: DocumentType): DocumentType {
         val sql = """
-            INSERT INTO LawFirm.document_types (id, name) 
-            VALUES (null, ?)
+            INSERT INTO LawFirm.document_types (name) 
+            VALUES (?)
         """.trimIndent()
 
         jdbcTemplate.update(sql, documentType.name)
