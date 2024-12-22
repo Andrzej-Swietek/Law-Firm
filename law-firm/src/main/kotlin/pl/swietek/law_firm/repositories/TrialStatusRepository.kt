@@ -22,7 +22,7 @@ class TrialStatusRepository(private val jdbcTemplate: JdbcTemplate) {
     }
 
     fun saveTrialStatus(trialStatus: TrialStatus): TrialStatus {
-        val sql = "INSERT INTO LawFirm.trial_status (id, name) VALUES (null, ?)"
+        val sql = "INSERT INTO LawFirm.trial_status (name) VALUES (?)"
         jdbcTemplate.update(sql, trialStatus.name)
         return trialStatus
     }

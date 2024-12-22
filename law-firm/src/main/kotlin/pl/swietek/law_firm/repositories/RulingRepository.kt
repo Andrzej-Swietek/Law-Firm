@@ -46,7 +46,13 @@ class RulingRepository(
             VALUES (?, ?, ?, ?)
         """.trimIndent()
 
-        val id = jdbcTemplate.update(sql, newRuling.isFinal, newRuling.content, newRuling.trialId, newRuling.finalizationDate)
+        val id = jdbcTemplate.update(
+            sql,
+            newRuling.isFinal,
+            newRuling.content,
+            newRuling.trialId,
+            newRuling.finalizationDate
+        )
         newRuling.id = id
         return newRuling
     }

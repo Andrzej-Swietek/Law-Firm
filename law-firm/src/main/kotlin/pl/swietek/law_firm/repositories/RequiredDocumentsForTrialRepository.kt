@@ -92,8 +92,8 @@ class RequiredDocumentsForTrialRepository(
 
     fun saveRequiredDocumentForTrial(requiredDocumentForTrial: RequiredDocumentForTrial): RequiredDocumentForTrial {
         val sql = """
-            INSERT INTO LawFirm.required_documents_for_trial (id, trial_id, document_id)
-            VALUES (null, ?, ?)
+            INSERT INTO LawFirm.required_documents_for_trial (trial_id, document_id)
+            VALUES (?, ?)
         """.trimIndent()
 
         jdbcTemplate.update(

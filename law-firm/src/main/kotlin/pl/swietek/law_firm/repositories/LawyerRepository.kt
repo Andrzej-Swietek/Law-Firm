@@ -31,11 +31,11 @@ class LawyerRepository(private val jdbcTemplate: JdbcTemplate) {
 
     fun saveLawyer(lawyer: Lawyer): Lawyer {
         val sql = """
-            INSERT INTO LawFirm.lawyer (id, first_name, last_name, specialization)
-            VALUES (?, ?, ?, ?)
+            INSERT INTO LawFirm.lawyer (first_name, last_name, specialization)
+            VALUES ( ?, ?, ?)
         """.trimIndent()
 
-        jdbcTemplate.update(sql, lawyer.id, lawyer.firstName, lawyer.lastName, lawyer.specialization)
+        jdbcTemplate.update(sql, lawyer.firstName, lawyer.lastName, lawyer.specialization)
         return lawyer
     }
 

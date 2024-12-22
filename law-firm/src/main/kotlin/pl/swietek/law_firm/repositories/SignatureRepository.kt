@@ -23,8 +23,8 @@ class SignatureRepository(
 
     fun saveSignature(signature: Signature): Signature {
         val sql = """
-            INSERT INTO LawFirm.signature (id, person_id, role, required_document_id)
-            VALUES (null, ?, ?, ?)
+            INSERT INTO LawFirm.signature (person_id, role, required_document_id)
+            VALUES ( ?, ?, ?)
         """.trimIndent()
 
         jdbcTemplate.update(
