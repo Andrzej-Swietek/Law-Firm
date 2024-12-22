@@ -53,7 +53,7 @@ class DocumentRepository(private val jdbcTemplate: JdbcTemplate) {
     }
 
     fun saveDocument(document: Document): Document {
-        val sql = "INSERT INTO LawFirm.document (id, type_id, file_path) VALUES (null, ?, ?)"
+        val sql = "INSERT INTO LawFirm.document (type_id, file_path) VALUES (?, ?)"
         jdbcTemplate.update(sql, document.typeId, document.filePath)
         return document
     }

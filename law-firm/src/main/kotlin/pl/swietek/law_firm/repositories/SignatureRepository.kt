@@ -21,6 +21,31 @@ class SignatureRepository(
         return jdbcTemplate.query(sql, signatureMapper, signatureId).firstOrNull()
     }
 
+    fun getSignaturesByDocumentId(documentId: Int): List<Signature> {
+        val sql = """
+            SELECT s.*, 
+                   LawFirm.get_signature_person_data(s.id) AS person_data
+            FROM LawFirm.signature s
+            JOIN LawFirm.required_documents_for_trial rdft ON s.required_document_id = rdft.id
+            WHERE rdft.document_id = ?
+        """.trimIndent()
+
+        return jdbcTemplate.query(sql, signatureMapper, documentId)
+    }
+
+    fun getSignaturesByCaseId(caseId: Int): List<Signature> {
+        val sql = """
+            SELECT s.*, 
+                   LawFirm.get_signature_person_data(s.id) AS person_data
+            FROM LawFirm.signature s
+            JOIN LawFirm.required_documents_for_trial rdft ON s.required_document_id = rdft.id
+            JOIN LawFirm.trial t ON rdft.trial_id = t.id
+            WHERE t.case_id = ?
+        """.trimIndent()
+
+        return jdbcTemplate.query(sql, signatureMapper, caseId)
+    }
+
     fun saveSignature(signature: Signature): Signature {
         val sql = """
             INSERT INTO LawFirm.signature (person_id, role, required_document_id)

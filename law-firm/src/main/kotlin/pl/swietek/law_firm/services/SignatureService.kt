@@ -1,0 +1,19 @@
+package pl.swietek.law_firm.services
+
+import pl.swietek.law_firm.models.Signature
+
+interface SignatureService {
+
+    fun getSignatureById(signatureId: Int): Signature?
+
+    fun getSignaturesByDocumentId(documentId: Int): List<Signature>
+
+    fun getSignaturesByCaseId(caseId: Int): List<Signature>
+
+    fun saveSignature(signature: Signature): Signature
+
+    fun updateSignature(signature: Signature): Signature
+
+    fun deleteSignature(signatureId: Int): Boolean
+
+}
