@@ -93,9 +93,12 @@ class CaseRepository(
                 cl.id AS case_client_id, 
                 cl.first_name AS client_first_name, 
                 cl.last_name AS client_last_name,
+                cl.email AS client_email,
+                cl.contact_data_id AS client_contact_details_id,
                 l.id AS case_responsible_lawyer_id, 
                 l.first_name AS lawyer_first_name, 
-                l.last_name AS lawyer_last_name
+                l.last_name AS lawyer_last_name,
+                l.specialization AS lawyer_specialization
             FROM LawFirm.case c
             LEFT JOIN LawFirm.client cl ON c.client_id = cl.id
             LEFT JOIN LawFirm.lawyer l ON c.responsible_lawyer_id = l.id
@@ -115,9 +118,11 @@ class CaseRepository(
                 cl.first_name AS client_first_name, 
                 cl.last_name AS client_last_name,
                 cl.email AS client_email,
+                cl.contact_data_id AS client_contact_details_id,
                 l.id AS case_responsible_lawyer_id, 
                 l.first_name AS lawyer_first_name, 
-                l.last_name AS lawyer_last_name
+                l.last_name AS lawyer_last_name,
+                l.specialization AS lawyer_specialization
             FROM LawFirm.case c
             LEFT JOIN LawFirm.client cl ON c.client_id = cl.id
             LEFT JOIN LawFirm.lawyer l ON c.responsible_lawyer_id = l.id
