@@ -49,11 +49,13 @@ class CaseRepository(
 
     fun getCaseById(caseId: Int): Case? {
         val sql = """
-            SELECT 
+             SELECT 
                 c.*, 
                 cl.id AS case_client_id, 
                 cl.first_name AS client_first_name, 
                 cl.last_name AS client_last_name,
+                cl.email AS client_email,
+                cl.contact_data_id AS client_contact_details_id,
                 l.id AS case_responsible_lawyer_id, 
                 l.first_name AS lawyer_first_name, 
                 l.last_name AS lawyer_last_name,
@@ -66,7 +68,7 @@ class CaseRepository(
 
         val case = jdbcTemplate.queryForObject(sql, caseMapper, caseId)
 
-        case?.documents = getDocumentsForCase(caseId)
+//        case?.documents = getDocumentsForCase(caseId)
 
         return case
     }
@@ -112,6 +114,7 @@ class CaseRepository(
                 cl.id AS case_client_id, 
                 cl.first_name AS client_first_name, 
                 cl.last_name AS client_last_name,
+                cl.email AS client_email,
                 l.id AS case_responsible_lawyer_id, 
                 l.first_name AS lawyer_first_name, 
                 l.last_name AS lawyer_last_name
