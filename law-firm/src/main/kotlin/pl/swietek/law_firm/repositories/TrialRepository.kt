@@ -62,8 +62,9 @@ class TrialRepository(
             ps.setInt(3, trial.trialStatusId)
             ps.setInt(4, trial.clientId)
             ps.setInt(5,  trial.lawyerId)
+            ps.setInt(6,  trial.judgeId)
             ps.setDate(7, java.sql.Date.valueOf(trial.date))
-            ps.setInt(7, trial.caseId)
+            ps.setInt(8, trial.caseId)
             ps
         }, keyHolder)
 

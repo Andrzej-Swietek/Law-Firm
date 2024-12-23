@@ -1,11 +1,16 @@
 package pl.swietek.law_firm.repositories
 
 import org.springframework.jdbc.core.JdbcTemplate
+import org.springframework.jdbc.support.GeneratedKeyHolder
+import org.springframework.jdbc.support.KeyHolder
 import org.springframework.stereotype.Repository
 import pl.swietek.law_firm.mappers.CaseMapper
 import pl.swietek.law_firm.mappers.DocumentMapper
 import pl.swietek.law_firm.models.Case
 import pl.swietek.law_firm.models.Document
+import pl.swietek.law_firm.requests.CaseRequest
+import java.sql.Connection
+import java.sql.PreparedStatement
 
 @Repository
 class CaseRepository(
@@ -16,18 +21,24 @@ class CaseRepository(
 
     fun getAllCases(page: Int, size: Int): List<Case> {
         val offset = (page - 1) * size
+//        val sql = """
+//            SELECT
+//                c.*,
+//                cl.id AS case_client_id,
+//                cl.first_name AS client_first_name,
+//                cl.last_name AS client_last_name,
+//                l.id AS case_responsible_lawyer_id,
+//                l.first_name AS lawyer_first_name,
+//                l.last_name AS lawyer_last_name
+//            FROM LawFirm.case c
+//            LEFT JOIN LawFirm.client cl ON c.client_id = cl.id
+//            LEFT JOIN LawFirm.lawyer l ON c.responsible_lawyer_id = l.id
+//            LIMIT ? OFFSET ?
+//        """.trimIndent()
+
         val sql = """
-            SELECT 
-                c.*, 
-                cl.id AS case_client_id, 
-                cl.first_name AS client_first_name, 
-                cl.last_name AS client_last_name,
-                l.id AS case_responsible_lawyer_id, 
-                l.first_name AS lawyer_first_name, 
-                l.last_name AS lawyer_last_name
-            FROM LawFirm.case c
-            LEFT JOIN LawFirm.client cl ON c.client_id = cl.id
-            LEFT JOIN LawFirm.lawyer l ON c.responsible_lawyer_id = l.id
+            SELECT *
+            FROM LawFirm.full_data_case
             LIMIT ? OFFSET ?
         """.trimIndent()
 
@@ -45,7 +56,8 @@ class CaseRepository(
                 cl.last_name AS client_last_name,
                 l.id AS case_responsible_lawyer_id, 
                 l.first_name AS lawyer_first_name, 
-                l.last_name AS lawyer_last_name
+                l.last_name AS lawyer_last_name,
+                l.specialization AS lawyer_specialization
             FROM LawFirm.case c
             LEFT JOIN LawFirm.client cl ON c.client_id = cl.id
             LEFT JOIN LawFirm.lawyer l ON c.responsible_lawyer_id = l.id
@@ -113,18 +125,33 @@ class CaseRepository(
         return jdbcTemplate.query(sql, caseMapper, lawyerId, size, offset)
     }
 
-    fun saveCase(newCase: Case): Case {
+    fun saveCase(newCase: CaseRequest): Case {
         val sql = """
             INSERT INTO LawFirm.case (name, description, responsible_lawyer_id, client_id)
             VALUES (?, ?, ?, ?)
         """.trimIndent()
 
-        val id = jdbcTemplate.update(sql, newCase.name, newCase.description, newCase.responsibleLawyerId, newCase.clientId)
-        newCase.id = id
-        return newCase
+        val keyHolder: KeyHolder = GeneratedKeyHolder()
+
+        jdbcTemplate.update({ connection: Connection ->
+            val ps: PreparedStatement = connection.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS)
+            ps.setString(1, newCase.name)
+            ps.setString(2, newCase.description)
+            ps.setInt(3, newCase.responsibleLawyerId)
+            ps.setInt(4, newCase.clientId)
+            ps
+        }, keyHolder)
+
+        val generatedId: Int = keyHolder.keyList
+            .firstOrNull()
+            ?.get("id")
+            .toString().toInt()
+            ?: throw Exception("Failed to retrieve generated ID")
+
+        return this.getCaseById(generatedId) ?: throw RuntimeException("Failed to retrieve generated ID")
     }
 
-    fun updateCase(updatedCase: Case): Case {
+    fun updateCase(updatedCase: CaseRequest): Case {
         val sql = """
             UPDATE LawFirm.case 
             SET name = ?, description = ?, responsible_lawyer_id = ?, client_id = ?
@@ -132,7 +159,7 @@ class CaseRepository(
         """.trimIndent()
 
         jdbcTemplate.update(sql, updatedCase.name, updatedCase.description, updatedCase.responsibleLawyerId, updatedCase.clientId, updatedCase.id)
-        return updatedCase
+        return this.getCaseById(updatedCase.id)!!
     }
 
     fun deleteCase(caseId: Int): Boolean {

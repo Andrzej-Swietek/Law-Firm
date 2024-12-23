@@ -4,6 +4,7 @@ import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import pl.swietek.law_firm.models.Case
+import pl.swietek.law_firm.requests.CaseRequest
 import pl.swietek.law_firm.services.CaseService
 
 @RestController
@@ -46,7 +47,7 @@ class CaseController(private val caseService: CaseService) {
     }
 
     @PostMapping
-    fun saveCase(@RequestBody newCase: Case): ResponseEntity<Case> {
+    fun saveCase(@RequestBody newCase: CaseRequest): ResponseEntity<Case> {
         val savedCase = caseService.saveCase(newCase)
         return ResponseEntity.status(HttpStatus.CREATED).body(savedCase)
     }
@@ -54,7 +55,7 @@ class CaseController(private val caseService: CaseService) {
     @PutMapping("/{id}")
     fun updateCase(
         @PathVariable id: Int,
-        @RequestBody updatedCase: Case
+        @RequestBody updatedCase: CaseRequest
     ): ResponseEntity<Case> {
         if (updatedCase.id != id) return ResponseEntity.badRequest().build()
         val case = caseService.updateCase(updatedCase)

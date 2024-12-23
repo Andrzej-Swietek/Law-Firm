@@ -122,3 +122,31 @@ FROM LawFirm.trial t
          LEFT JOIN LawFirm.judge j ON t.judge_id = j.id
 ;
 
+
+-- 7. Widok sprawy z wszytkimi danymi
+-- Pobiera wszystkie relacje
+
+CREATE VIEW LawFirm.full_data_case AS
+SELECT
+    c.*,
+    cl.id AS case_client_id,
+    cl.first_name AS client_first_name,
+    cl.last_name AS client_last_name,
+    cl.email AS client_email,
+    cl.contact_data_id AS client_contact_details_id,
+    l.id AS case_responsible_lawyer_id,
+    l.first_name AS lawyer_first_name,
+    l.last_name AS lawyer_last_name,
+    l.specialization AS lawyer_specialization,
+    cd.id AS contact_details_id,
+    cd.phone_number AS contact_details_phone_number,
+    cd.email AS contact_details_email,
+    cd.street AS contact_details_street,
+    cd.city AS contact_details_city,
+    cd.state AS contact_details_state,
+    cd.zip_code AS contact_details_zip_code,
+    cd.country AS contact_details_country
+FROM LawFirm.case c
+         LEFT JOIN LawFirm.client cl ON c.client_id = cl.id
+         LEFT JOIN LawFirm.lawyer l ON c.responsible_lawyer_id = l.id
+         LEFT JOIN LawFirm.contact_data cd ON cl.contact_data_id = cd.id

@@ -1,6 +1,7 @@
 package pl.swietek.law_firm.services
 
 import pl.swietek.law_firm.models.Case
+import pl.swietek.law_firm.requests.CaseRequest
 
 interface CaseService {
 
@@ -12,9 +13,9 @@ interface CaseService {
 
     fun getCasesByClientId(clientId: Int, page: Int, size: Int): List<Case>
 
-    fun saveCase(newCase: Case): Case
+    fun saveCase(newCase: CaseRequest): Case
 
-    fun updateCase(updatedCase: Case): Case
+    fun updateCase(updatedCase: CaseRequest): Case
 
     fun deleteCase(caseId: Int): Boolean
 }

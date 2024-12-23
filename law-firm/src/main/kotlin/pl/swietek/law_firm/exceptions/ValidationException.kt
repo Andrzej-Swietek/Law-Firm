@@ -10,4 +10,5 @@ import lombok.EqualsAndHashCode
 @AllArgsConstructor
 class ValidationException(errors: List<String>) : RuntimeException() {
     private val errors: List<String>? = null
+    override val message: String = errors.joinToString(separator = "\n")
 }

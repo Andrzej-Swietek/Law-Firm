@@ -3,6 +3,7 @@ package pl.swietek.law_firm.services.impl
 import org.springframework.stereotype.Service
 import pl.swietek.law_firm.models.Case
 import pl.swietek.law_firm.repositories.CaseRepository
+import pl.swietek.law_firm.requests.CaseRequest
 import pl.swietek.law_firm.services.CaseService
 
 @Service
@@ -26,11 +27,11 @@ class CaseServiceImpl(
         return caseRepository.getCasesByClientId(clientId, page, size)
     }
 
-    override fun saveCase(newCase: Case): Case {
+    override fun saveCase(newCase: CaseRequest): Case {
         return caseRepository.saveCase(newCase)
     }
 
-    override fun updateCase(updatedCase: Case): Case {
+    override fun updateCase(updatedCase: CaseRequest): Case {
         return caseRepository.updateCase(updatedCase)
     }
 
