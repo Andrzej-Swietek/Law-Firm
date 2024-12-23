@@ -96,30 +96,51 @@ FROM LawFirm.decision d
 
 -- 6. Widok z rozprawą
 -- Pobiera wszystkie relacje
-
+DROP View IF EXISTS LawFirm.full_data_trial;
 CREATE VIEW LawFirm.full_data_trial AS
 SELECT
     t.id AS trial_id,
     t.title AS trial_title,
     t.description AS trial_description,
+    t.client_id AS trial_client_id,
+    t.lawyer_id AS trial_lawyer_id,
+    t.judge_id AS trial_judge_id,
+    t.client_id AS trial_case_id,
+    t.date AS trial_date,
     t.trial_status_id AS trial_status_id,
     ts.name AS trial_status_name,
-    t.client_id AS client_id,
+
+    c.id AS client_id,
     c.first_name AS client_first_name,
     c.last_name AS client_last_name,
+    c.email AS client_email,
+    c.contact_data_id AS client_contact_data_id,
+
     t.lawyer_id AS lawyer_id,
     l.first_name AS lawyer_first_name,
     l.last_name AS lawyer_last_name,
-    t.judge_id AS judge_id,
+    l.specialization as lawyer_specialization,
+
+    j.id AS judge_id,
     j.first_name AS judge_first_name,
     j.last_name AS judge_last_name,
-    t.date AS trial_date,
-    t.case_id AS case_id
+    j.court_division_id AS judge_court_division_id,
+    cd.name as court_division_name,
+    cd.city as court_division_city,
+
+    ca.id AS case_id,
+    ca.name AS case_name,
+    ca.description AS case_description,
+    ca.responsible_lawyer_id AS case_responsible_lawyer_id,
+    ca.client_id AS case_client_id
 FROM LawFirm.trial t
          LEFT JOIN LawFirm.trial_status ts ON t.trial_status_id = ts.id
          LEFT JOIN LawFirm.client c ON t.client_id = c.id
          LEFT JOIN LawFirm.lawyer l ON t.lawyer_id = l.id
          LEFT JOIN LawFirm.judge j ON t.judge_id = j.id
+         LEFT JOIN LawFirm.court_division cd ON j.court_division_id = cd.id
+         LEFT JOIN LawFirm.case ca ON t.case_id = ca.id;
+
 ;
 
 
@@ -150,3 +171,10 @@ FROM LawFirm.case c
          LEFT JOIN LawFirm.client cl ON c.client_id = cl.id
          LEFT JOIN LawFirm.lawyer l ON c.responsible_lawyer_id = l.id
          LEFT JOIN LawFirm.contact_data cd ON cl.contact_data_id = cd.id
+;
+
+
+
+SELECT *
+FROM LawFirm.full_data_trial
+WHERE trial_id = ?
