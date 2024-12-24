@@ -26,6 +26,9 @@
         });
     }
 
+    const handleEdit = (id: number) => goto(`/judge/edit/${id}`);
+
+
     const handleChangePage = async (direction: 'up' | 'down') => {
         if (direction == 'up') page = page + 1;
         else page = page - 1 > 0 ? page -1 : 1;
@@ -51,6 +54,7 @@
         headers={headers}
         {fields}
         onDelete={handleDeleteClient}
+        onEdit={handleEdit}
 />
 <Pagination.Root count={100} perPage={10} let:pages let:currentPage>
     <Pagination.Content>

@@ -34,7 +34,7 @@ class ContactDetailsServiceImpl(
             zipCode = updatedDetails.zipCode,
             country = updatedDetails.country
         )
-        return contactDetailsRepository.saveContactData(mergedDetails)
+        return contactDetailsRepository.updateContactData(mergedDetails)
     }
 
     override fun deleteContactDetails(id: Int) {
