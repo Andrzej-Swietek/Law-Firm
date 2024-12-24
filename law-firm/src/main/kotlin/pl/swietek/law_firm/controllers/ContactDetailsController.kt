@@ -27,6 +27,13 @@ class ContactDetailsController(
         return ResponseEntity.ok(details)
     }
 
+    @GetMapping("/client/{id}")
+    fun getContactDetailsByClient(@PathVariable id: Int): ResponseEntity<ContactDetails> {
+        val details = contactDetailsService.getContactDetailsByClient(id)
+            ?: throw ResponseStatusException(HttpStatus.NOT_FOUND, "Contact details not found")
+        return ResponseEntity.ok(details)
+    }
+
     @PutMapping("/{id}")
     fun updateContactDetails(
         @PathVariable id: Int,

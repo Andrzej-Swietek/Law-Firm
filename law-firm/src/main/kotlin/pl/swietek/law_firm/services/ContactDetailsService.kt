@@ -7,6 +7,8 @@ interface ContactDetailsService {
 
     fun getContactDetailsById(id: Int): ContactDetails?
 
+    fun getContactDetailsByClient(id: Int): ContactDetails?
+
     fun updateContactDetails(id: Int, updatedDetails: ContactDetails): ContactDetails
 
     fun deleteContactDetails(id: Int)

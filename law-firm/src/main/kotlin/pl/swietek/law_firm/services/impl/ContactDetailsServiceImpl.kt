@@ -18,6 +18,10 @@ class ContactDetailsServiceImpl(
         return contactDetailsRepository.getContactDataById(id.toLong())
     }
 
+    override fun getContactDetailsByClient(id: Int): ContactDetails? {
+        return contactDetailsRepository.getContactDataByClient(id.toLong())
+    }
+
     override fun updateContactDetails(id: Int, updatedDetails: ContactDetails): ContactDetails {
         val existingDetails = contactDetailsRepository.getContactDataById(id.toLong())
             ?: throw ClientNotFoundException("Contact details with ID $id not found")

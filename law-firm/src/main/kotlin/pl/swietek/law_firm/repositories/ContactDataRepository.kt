@@ -27,6 +27,17 @@ class ContactDataRepository(private val jdbcTemplate: JdbcTemplate) {
     }
 
 
+    fun getContactDataByClient(clientId: Long): ContactDetails? {
+        val sql = """
+           SELECT cd.* 
+           FROM LawFirm.contact_data cd
+           JOIN LawFirm.client c ON c.contact_data_id = cd.id
+           WHERE c.id = ?
+        """.trimIndent()
+
+        return jdbcTemplate.query(sql, contactDataRowMapper, clientId).firstOrNull()
+    }
+
 //    fun saveContactData(contactData: ContactDetails): ContactDetails {
 //        val sql = """
 //            INSERT INTO LawFirm.contact_data(phone_number, email, street, city, state, zip_code, country)
