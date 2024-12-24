@@ -38,17 +38,25 @@
         </Table.Row>
     </Table.Header>
     <Table.Body>
-        {#each data as item}
+        {#if data.length > 0}
+            {#each data as item}
+                <Table.Row>
+                    {#each fields as field}
+                        <Table.Cell>{ field.split(".").length === 1? item[field] : getNestedValue(item, field)}</Table.Cell>
+                    {/each}
+                    <Table.Cell class="text-right">
+                        <Button on:click={() => onDetails(item.id)} variant="outline">Details</Button>
+                        <Button on:click={() => onEdit(item.id)} variant="outline">Edit</Button>
+                        <DeleteBtn onClick={() => onDelete(item.id)} />
+                    </Table.Cell>
+                </Table.Row>
+            {/each}
+        {:else}
             <Table.Row>
-                {#each fields as field}
-                    <Table.Cell>{ field.split(".").length === 1? item[field] : getNestedValue(item, field)}</Table.Cell>
-                {/each}
-                <Table.Cell class="text-right">
-                    <Button on:click={() => onDetails(item.id)} variant="outline">Details</Button>
-                    <Button on:click={() => onEdit(item.id)} variant="outline">Edit</Button>
-                    <DeleteBtn onClick={() => onDelete(item.id)} />
+                <Table.Cell colspan="100%" class="text-center py-4 font-black">
+                    No Records in database
                 </Table.Cell>
             </Table.Row>
-        {/each}
+        {/if}
     </Table.Body>
 </Table.Root>

@@ -10,6 +10,7 @@ class SignatureRepository(
     private val jdbcTemplate: JdbcTemplate,
     private val signatureMapper: SignatureMapper
 ) {
+
     fun getSignatureById(signatureId: Int): Signature? {
         val sql = """
             SELECT s.*, 
