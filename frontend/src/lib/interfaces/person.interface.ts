@@ -2,8 +2,8 @@ import type {CourtDivision} from "$lib/interfaces/court.interface";
 
 export interface Person {
     id: number;
-    firstname: string;
-    lastname: string;
+    firstName: string;
+    lastName: string;
 }
 
 export interface Client extends Person {
