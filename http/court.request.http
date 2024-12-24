@@ -1,0 +1,28 @@
+### Get all courts
+GET http://localhost:8080/api/courts?page=1&size=10
+
+### Get court by ID
+GET http://localhost:8080/api/courts/1
+
+### Create new court
+POST http://localhost:8080/api/courts
+Content-Type: application/json
+
+{
+  "name": "Supreme Court",
+  "location": "New York",
+  "jurisdiction": "Federal"
+}
+
+### Update court
+PUT http://localhost:8080/api/courts/1
+Content-Type: application/json
+
+{
+  "name": "Supreme Court Updated",
+  "location": "Washington D.C.",
+  "jurisdiction": "Federal"
+}
+
+### Delete court
+DELETE http://localhost:8080/api/courts/1

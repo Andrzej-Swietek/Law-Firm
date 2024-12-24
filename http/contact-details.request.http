@@ -1,0 +1,36 @@
+### Get contact details by ID
+GET http://localhost:8080/api/contact-details/1
+
+### Get contact details by Client ID
+GET http://localhost:8080/api/contact-details/client/1
+
+### Create new contact details
+POST http://localhost:8080/api/contact-details
+Content-Type: application/json
+
+{
+  "phoneNumber": "12345678",
+  "email": "email@example.com",
+  "street": "Kawiory",
+  "city": "Krakow",
+  "state": "Malopolska",
+  "zipCode": "32-005",
+  "country": "Poland"
+}
+
+### Update contact details
+PUT http://localhost:8080/api/contact-details/1
+Content-Type: application/json
+
+{
+  "phoneNumber": "12345678",
+  "email": "email@example.com",
+  "street": "Mickiewicza 30",
+  "city": "Poznan",
+  "state": "Wielkopolska",
+  "zipCode": "32-005",
+  "country": "Poland"
+}
+
+### Delete contact details
+DELETE http://localhost:8080/api/contact-details/1

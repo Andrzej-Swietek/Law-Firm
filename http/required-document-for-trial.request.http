@@ -1,0 +1,23 @@
+### Get all required documents for a trial
+GET http://localhost:8080/api/required-documents/trial/1
+
+### Add a required document for a trial
+POST http://localhost:8080/api/required-documents
+Content-Type: application/json
+
+{
+  "trialId": 1,
+  "documentId": 5
+}
+
+### Update required document status
+PUT http://localhost:8080/api/required-documents/1
+Content-Type: application/json
+
+{
+  "trialId": 1,
+  "documentId": 6
+}
+
+### Delete required document
+DELETE http://localhost:8080/api/required-documents/1

@@ -1,0 +1,39 @@
+### Get all trials
+GET http://localhost:8080/api/trials?page=1&size=10
+
+### Get trial by ID
+GET http://localhost:8080/api/trials/1
+
+### Create new trial
+POST http://localhost:8080/api/trials
+Content-Type: application/json
+
+{
+  "title": "Divorce",
+  "description": "string",
+  "trialStatusId": 1,
+  "clientId": 4,
+  "lawyerId": 1,
+  "judgeId": 1,
+  "date": "2024-12-24",
+  "caseId": 1
+}
+
+
+### Update trial
+PUT http://localhost:8080/api/trials/1
+Content-Type: application/json
+
+{
+  "title": "Divorce",
+  "description": "Lorem ipsum dolor sit amet",
+  "trialStatusId": 2,
+  "clientId": 4,
+  "lawyerId": 1,
+  "judgeId": 1,
+  "date": "2024-12-24",
+  "caseId": 1
+}
+
+### Delete trial
+DELETE http://localhost:8080/api/trials/1

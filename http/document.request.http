@@ -1,0 +1,33 @@
+### Get all documents
+GET http://localhost:8080/api/documents?page=1&size=10
+
+### Get document by ID
+GET http://localhost:8080/api/documents/1
+
+### Get documents for a trial
+GET http://localhost:8080/api/documents/trial/1
+
+### Create new document
+POST http://localhost:8080/api/documents
+Content-Type: application/json
+
+{
+  "name": "Evidence Document",
+  "type": "PDF",
+  "trialId": 1,
+  "url": "https://example.com/document.pdf"
+}
+
+### Update document
+PUT http://localhost:8080/api/documents/1
+Content-Type: application/json
+
+{
+  "name": "Updated Evidence Document",
+  "type": "DOCX",
+  "trialId": 1,
+  "url": "https://example.com/updated-document.docx"
+}
+
+### Delete document
+DELETE http://localhost:8080/api/documents/1

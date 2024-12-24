@@ -1,0 +1,28 @@
+### Get all judges
+GET http://localhost:8080/api/judges?page=1&size=10
+
+### Get judge by ID
+GET http://localhost:8080/api/judges/1
+
+### Create new judge
+POST http://localhost:8080/api/judges
+Content-Type: application/json
+
+{
+  "firstName": "John",
+  "lastName": "Smith",
+  "courtId": 1
+}
+
+### Update judge
+PUT http://localhost:8080/api/judges/1
+Content-Type: application/json
+
+{
+  "firstName": "John Updated",
+  "lastName": "Smith",
+  "courtId": 2
+}
+
+### Delete judge
+DELETE http://localhost:8080/api/judges/1

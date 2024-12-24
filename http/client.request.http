@@ -22,3 +22,18 @@ Content-Type: application/json
     "country": "Poland"
   }
 }
+
+
+### Update client
+PUT http://localhost:8080/api/clients/1
+Content-Type: application/json
+
+{
+  "firstName": "Jane",
+  "lastName": "Doe",
+  "email": "jane.doe@example.com",
+  "contactDataId": 6
+}
+
+### Delete client
+DELETE http://localhost:8080/api/clients/1

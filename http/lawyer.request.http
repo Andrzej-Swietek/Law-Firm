@@ -1,0 +1,28 @@
+### Get all lawyers
+GET http://localhost:8080/api/lawyers?page=1&size=10
+
+### Get lawyer by ID
+GET http://localhost:8080/api/lawyers/1
+
+### Create new lawyer
+POST http://localhost:8080/api/lawyers
+Content-Type: application/json
+
+{
+  "firstName": "Emily",
+  "lastName": "Clark",
+  "specialization": "Criminal Law"
+}
+
+### Update lawyer
+PUT http://localhost:8080/api/lawyers/1
+Content-Type: application/json
+
+{
+  "firstName": "Emily Updated",
+  "lastName": "Clark",
+  "specialization": "Family Law"
+}
+
+### Delete lawyer
+DELETE http://localhost:8080/api/lawyers/1
