@@ -42,9 +42,9 @@
 </script>
 
 <PageHeader
-        title="Appeals Management"
-        description="Manage appeals"
-        onCreate={ ()=> goto("/appeal/create") }
+        title="Ruling Management"
+        description="Manage rulings"
+        onCreate={ ()=> goto("/ruling/create") }
 />
 <EntityTable
         data={rulings}

@@ -8,3 +8,18 @@ export async function getAllRulings(page: number=1, limit: number=10): Promise<R
         return [];
     }
 }
+
+export async function getAllRulingsAllPages(): Promise<Ruling[]> {
+    let page = 1;
+    const limit = 10000;
+    let allRulings: Ruling[] = [];
+    let fetchedRulings: Ruling[];
+
+    do {
+        fetchedRulings = await getAllRulings(page, limit);
+        allRulings = allRulings.concat(fetchedRulings);
+        page++;
+    } while (fetchedRulings.length === limit);
+
+    return allRulings;
+}

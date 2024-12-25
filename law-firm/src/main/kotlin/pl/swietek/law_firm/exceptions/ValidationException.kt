@@ -11,4 +11,6 @@ import lombok.EqualsAndHashCode
 class ValidationException(errors: List<String>) : RuntimeException() {
     private val errors: List<String>? = null
     override val message: String = errors.joinToString(separator = "\n")
+
+    fun getErrors() = run { errors }
 }

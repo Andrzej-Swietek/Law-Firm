@@ -32,14 +32,55 @@ class AppealRepository(
         val offset = (page - 1) * size
         val sql = """
             SELECT 
-                a.*, 
-                ir.id AS appeal_initial_ruling_id, 
-                fr.id AS appeal_final_ruling_id, 
-                t.id AS appeal_trial_id
+                a.id AS appeal_id,
+                a.initial_ruling_id AS appeal_initial_ruling_id,
+                a.final_ruling_id AS appeal_final_ruling_id,
+                a.trial_id AS appeal_trial_id,
+            
+                -- Kolumny dla initialRuling
+                ir.id AS appeal_initial_ruling_id,
+                ir.content AS appeal_initial_ruling_content,
+                ir.trial_id AS appeal_initial_trial_id,
+                ir.finalization_date AS appeal_initial_finalization_date,
+                ir.is_final AS appeal_initial_is_final,
+            
+                -- Kolumny dla finalRuling
+                fr.id AS appeal_final_ruling_id,
+                fr.content AS appeal_final_ruling_content,
+                fr.trial_id AS appeal_final_trial_id,
+                fr.finalization_date AS appeal_final_finalization_date,
+                fr.is_final AS appeal_final_is_final,
+            
+                -- Kolumny dla trial 
+                t.id AS trial_id,
+                t.title AS trial_title,
+                t.description AS trial_description,
+                t.trial_status_id AS trial_trial_status_id,
+                t.client_id AS trial_client_id,
+                t.lawyer_id AS trial_lawyer_id,
+                t.judge_id AS trial_judge_id,
+                t.date AS trial_date,
+                t.case_id AS trial_case_id,
+                    
+                    -- trial > lawyer
+                    l.id AS lawyer_id,
+                    l.first_name AS lawyer_first_name,
+                    l.last_name AS lawyer_last_name,
+                    l.specialization AS specialization,
+                    
+                    -- trial > client
+                    c.first_name as client_first_name,
+                    c.last_name AS client_lastname,
+                    c.email as client_email,
+                    c.contact_data_id as client_contact_data_id
+                
+                
             FROM LawFirm.appeal a
             LEFT JOIN LawFirm.ruling ir ON a.initial_ruling_id = ir.id
             LEFT JOIN LawFirm.ruling fr ON a.final_ruling_id = fr.id
             LEFT JOIN LawFirm.trial t ON a.trial_id = t.id
+            LEFT JOIN LawFirm.client c ON t.client_id = c.id
+            LEFT JOIN LawFirm.lawyer l ON t.lawyer_id = l.id
             LIMIT ? OFFSET ?
         """.trimIndent()
 
