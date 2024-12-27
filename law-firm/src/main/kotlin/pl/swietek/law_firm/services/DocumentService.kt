@@ -1,15 +1,20 @@
 package pl.swietek.law_firm.services
 
+import org.springframework.web.multipart.MultipartFile
 import pl.swietek.law_firm.models.Document
 import pl.swietek.law_firm.models.DocumentType
 import pl.swietek.law_firm.models.RequiredDocumentForTrial
+import pl.swietek.law_firm.reponses.DocumentResponse
+import pl.swietek.law_firm.reponses.PaginatedResponse
+import pl.swietek.law_firm.requests.DocumentRequest
 
 interface DocumentService {
-    fun getAllDocuments(page: Int, size: Int): List<Pair<Document, DocumentType>>
+
+    fun getAllDocuments(page: Int, size: Int): PaginatedResponse<DocumentResponse>
 
     fun getDocumentById(documentId: Long): Pair<Document, DocumentType>?
 
-    fun saveDocument(document: Document): Document
+    fun saveDocument(documentRequest: DocumentRequest, file: MultipartFile): Document
 
     fun updateDocument(document: Document): Document
 

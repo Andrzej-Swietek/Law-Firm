@@ -2,6 +2,8 @@ package pl.swietek.law_firm.models
 
 data class Document(
     val id: Long,
+    val title: String,
+    val description: String,
     val typeId: Long,
     val filePath: String,
     val documentType: DocumentType? = null

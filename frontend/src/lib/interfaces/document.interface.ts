@@ -17,6 +17,8 @@ export interface Document {
     id: number;
     typeId: number;
     filePath?: string;
+    description?: string;
+    title: string;
 
     documentType?: DocumentType;
 }

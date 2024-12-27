@@ -13,4 +13,13 @@ class DocumentTypeMapper : RowMapper<DocumentType> {
             name = rs.getString("name")
         )
     }
+
+    fun mapRowWithPrefix(rs: ResultSet, prefix: String=""): DocumentType {
+        return DocumentType(
+            id = rs.getLong("${prefix}id"),
+            name = rs.getString("${prefix}name")
+        )
+    }
+
+
 }

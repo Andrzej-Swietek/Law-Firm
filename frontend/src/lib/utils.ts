@@ -60,3 +60,33 @@ export const flyAndScale = (
 		easing: cubicOut
 	};
 };
+
+export const convertToFormData = (payload: any, formData: FormData = new FormData(), parentKeys: string[] = []): FormData => {
+	for (const [key, value] of Object.entries(payload)) {
+		const currentKeys: string[] = [...parentKeys, key];
+		const formDataKey: string = currentKeys.join('.');
+
+		if (typeof value === 'object' && value !== null && !(value instanceof File)) {
+			if (Array.isArray(value)) {
+				// Check if the array values are IDs (numbers or strings)
+				const containsOnlyIds = value.every(item => typeof item === 'number' || typeof item === 'string');
+
+				if (containsOnlyIds) {
+					// Append all IDs under the same key
+					formData.append(formDataKey, value.join(','));
+				} else {
+					for (let i: number = 0; i < value.length; i++) {
+						const arrayItemKey: string = `${formDataKey}[${i}]`;
+						convertToFormData(value[i], formData, [...currentKeys, `${i}`]);
+					}
+				}
+			} else {
+				convertToFormData(value, formData, currentKeys);
+			}
+		} else {
+			formData.append(formDataKey, value as string | Blob);
+		}
+	}
+
+	return formData;
+};

@@ -67,6 +67,10 @@ CREATE TABLE LawFirm.document
     CONSTRAINT document_type_fk FOREIGN KEY (type_id) REFERENCES LawFirm.document_types (id)
 );
 
+ALTER TABLE LawFirm.document
+    ADD COLUMN title VARCHAR(255),
+    ADD COLUMN description TEXT;
+
 CREATE TABLE LawFirm.case
 (
     id                    SERIAL  NOT NULL PRIMARY KEY,

@@ -1,11 +1,16 @@
 package pl.swietek.law_firm.controllers
 
 import org.springframework.http.HttpStatus
+import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
+import org.springframework.web.multipart.MultipartFile
 import pl.swietek.law_firm.models.Document
 import pl.swietek.law_firm.models.DocumentType
 import pl.swietek.law_firm.models.RequiredDocumentForTrial
+import pl.swietek.law_firm.reponses.DocumentResponse
+import pl.swietek.law_firm.reponses.PaginatedResponse
+import pl.swietek.law_firm.requests.DocumentRequest
 import pl.swietek.law_firm.services.DocumentService
 
 @RestController
@@ -14,27 +19,45 @@ class DocumentController(private val documentService: DocumentService) {
 
     @GetMapping("/all")
     fun getAllDocuments(
-        @RequestParam page: Int = 1,
-        @RequestParam size: Int = 10
-    ): ResponseEntity<List<Pair<Document, DocumentType>>> {
-        val documents = documentService.getAllDocuments(page, size)
-        return ResponseEntity.ok(documents)
+        @RequestParam(defaultValue = "1") page: Int,
+        @RequestParam(defaultValue = "10") size: Int
+    ): ResponseEntity<PaginatedResponse<DocumentResponse>> {
+        val paginatedResponse = documentService.getAllDocuments(page, size)
+        return ResponseEntity.ok(paginatedResponse)
     }
 
     @GetMapping("/{id}")
-    fun getDocumentById(@PathVariable id: Long): ResponseEntity<Pair<Document, DocumentType>> {
+    fun getDocumentById(@PathVariable id: Long): ResponseEntity<DocumentResponse> {
         val document = documentService.getDocumentById(id)
         return if (document != null) {
-            ResponseEntity.ok(document)
+            ResponseEntity.ok(
+                DocumentResponse(document.first, document.second)
+            )
         } else {
             ResponseEntity.notFound().build()
         }
     }
 
-    @PostMapping
-    fun saveDocument(@RequestBody document: Document): ResponseEntity<Document> {
-        val savedDocument = documentService.saveDocument(document)
-        return ResponseEntity.status(HttpStatus.CREATED).body(savedDocument)
+//    @PostMapping
+//    fun saveDocument(@RequestBody document: Document): ResponseEntity<Document> {
+//        val savedDocument = documentService.saveDocument(document)
+//        return ResponseEntity.status(HttpStatus.CREATED).body(savedDocument)
+//    }
+
+    @PostMapping(consumes = [MediaType.MULTIPART_FORM_DATA_VALUE])
+    fun createDocument(
+        @RequestParam("title") title: String,
+        @RequestParam("description") description: String,
+        @RequestParam("typeId") typeId: Long,
+        @RequestPart("file") file: MultipartFile
+    ): ResponseEntity<Document> {
+        val documentRequest = DocumentRequest(title, description, typeId)
+        documentRequest.validate()
+
+        val documentResponse = documentService.saveDocument(documentRequest, file)
+        return ResponseEntity
+            .status(HttpStatus.CREATED)
+            .body(documentResponse)
     }
 
     @PutMapping("/{id}")
