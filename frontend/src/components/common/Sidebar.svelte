@@ -16,10 +16,11 @@
         {  name: 'lawyer', label: 'Lawyers Management'},
         {  name: 'ruling', label: 'Ruling Management'},
         {  name: 'signature', label: 'Signatures Management'},
+        {  name: 'trial', label: 'Trials Management'},
     ]
 </script>
 
-<div class="col-span-full rounded-[10px] md:col-span-3 flex h-screen flex-col justify-between border bg-white">
+<div class="col-span-full sticky top-0 rounded-[10px] md:col-span-3 flex h-screen flex-col justify-between border bg-white">
     <div class="px-4 py-6">
         <span class="grid h-10 w-32 place-content-center rounded-lg bg-gray-100 text-xs text-gray-600">
             Logo

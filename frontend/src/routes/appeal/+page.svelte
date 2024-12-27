@@ -40,8 +40,8 @@
         appeals = [...response]
     })
 
-    const headers = ["ID", "Name", "Description", "Client Name", "Client Lastname", "Lawyer Name", "Lawyer Lastname"];
-    const fields = ["id", "name", "description", "client.firstName", "client.lastName", "responsibleLawyer.firstName", "responsibleLawyer.lastName"];
+    const headers = ["ID", "Trial", "Description", 'Initial Ruling Trial', 'Final Ruling Trial', "Client Name", "Client Lastname", "Lawyer Name", "Lawyer Lastname"];
+    const fields = ["id", "trial.title", "trial.description", 'initialRuling.content', 'finalRuling.content', "trial.client.firstName", "trial.client.lastName", "trial.lawyer.firstName", "trial.lawyer.lastName"];
 </script>
 
 <PageHeader
@@ -54,6 +54,7 @@
         headers={headers}
         {fields}
         onDelete={handleDelete}
+        onDetails={(id)=> goto(`/appeal/${id}`)}
 />
 <Pagination.Root count={100} perPage={10} let:pages let:currentPage>
     <Pagination.Content>

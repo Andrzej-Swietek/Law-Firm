@@ -6,12 +6,25 @@ import pl.swietek.law_firm.models.Case
 import pl.swietek.law_firm.models.Client
 import pl.swietek.law_firm.models.Lawyer
 import java.sql.ResultSet
+import java.sql.SQLException
 
 @Service
 class CaseMapper(
     private val lawyerMapper: LawyerMapper,
     private val clientMapper: ClientMapper,
 ) : RowMapper<Case> {
+
+    companion object {
+        fun hasColumn(rs: ResultSet, columnName: String): Boolean {
+            return try {
+                rs.findColumn(columnName)
+                true
+            } catch (e: SQLException) {
+                false
+            }
+        }
+    }
+
     override fun mapRow(rs: ResultSet, rowNum: Int): Case {
         // Mapowanie klienta
         val client = if (rs.getInt("case_client_id") != 0) {
@@ -48,6 +61,19 @@ class CaseMapper(
             responsibleLawyer = lawyer,
             client = client,
             documents = emptyList()
+        )
+    }
+
+    fun mapBriefCase(rs: ResultSet, prefix: String = ""): Case {
+        return Case(
+            id = if (hasColumn(rs, "${prefix}id")) rs.getInt("${prefix}id") else 0,
+            name = if (hasColumn(rs, "${prefix}name")) rs.getString("${prefix}name") ?: "" else "",
+            description = if (hasColumn(rs, "${prefix}description")) rs.getString("${prefix}description") ?: "" else "",
+            responsibleLawyerId = if (hasColumn(rs, "${prefix}responsible_lawyer_id")) rs.getInt("${prefix}responsible_lawyer_id") else 0,
+            clientId = if (hasColumn(rs, "${prefix}client_id")) rs.getInt("${prefix}client_id") else 0,
+            responsibleLawyer = null,
+            client = null,
+            documents = null
         )
     }
 }

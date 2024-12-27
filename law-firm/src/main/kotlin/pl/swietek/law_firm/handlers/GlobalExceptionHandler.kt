@@ -68,7 +68,7 @@ class GlobalExceptionHandler {
         e: BadSqlGrammarException
     ): ResponseEntity<ErrorResponse> {
         val errorResponse = ErrorResponse(
-            errors = mapOf("SQL Error" to e.message),
+            errors = mapOf("SQL Error" to e.sqlException?.message, "sql" to e.sql),
         )
         //  "A database syntax error occurred. Please check the SQL query and schema configuration."
         return ResponseEntity

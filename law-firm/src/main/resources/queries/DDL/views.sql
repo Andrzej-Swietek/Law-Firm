@@ -175,6 +175,3 @@ FROM LawFirm.case c
 
 
 
-SELECT *
-FROM LawFirm.full_data_trial
-WHERE trial_id = ?

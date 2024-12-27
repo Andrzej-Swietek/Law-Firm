@@ -5,7 +5,7 @@ type DecisionDTO = Partial<Decision>
 
 export async function updateDecision(id: number, decision: DecisionDTO): Promise<Decision|null> {
     try {
-        const result: Decision =  await apiClient.put<Decision>(`/api/v1/decisions/${id}`, decision);
+        const result: Decision =  await apiClient.put<Decision>(`/api/v1/decisions/${id}`, {decision, caseId: decision.caseID});
         return result;
     } catch (e) {
         return null

@@ -25,6 +25,8 @@
         });
     }
 
+    const handleEdit = (id: number) => goto(`/court/edit/${id}`)
+
     onMount(async ()=>{
         const response = await getAllCourts()
         console.log(response)
@@ -45,4 +47,5 @@
         headers={headers}
         {fields}
         onDelete={handleDeleteClient}
+        onEdit={handleEdit}
 />

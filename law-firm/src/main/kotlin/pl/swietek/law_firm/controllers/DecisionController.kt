@@ -10,7 +10,7 @@ import pl.swietek.law_firm.services.DecisionService
 @RequestMapping("/api/v1/decisions")
 class DecisionController(private val decisionService: DecisionService) {
 
-    @GetMapping
+    @GetMapping("/all")
     fun getAllDecisions(
         @RequestParam("page", defaultValue = "1") page: Int,
         @RequestParam("size", defaultValue = "10") size: Int
