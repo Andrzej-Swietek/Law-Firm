@@ -32,28 +32,34 @@ class FileSystemStorage : Storage {
 
     @Async
     override fun store(file: MultipartFile?, destinationPath: String?) {
+        if (file == null || destinationPath == null) {
+            throw IllegalArgumentException("File or destination path must not be null")
+        }
+
         try {
-            val resource = resourceLoader!!.getResource(basePath + destinationPath)
-            val destinationFile = resource.file
-            Files.createDirectories(destinationFile.parentFile.toPath())
-            Files.copy(file!!.inputStream, destinationFile.toPath(), StandardCopyOption.REPLACE_EXISTING)
+            println(basePath)
+            val destination = basePath?.let { Paths.get(it, destinationPath) }
+            if (destination != null) {
+                Files.createDirectories(destination.parent)
+                Files.copy(file.inputStream, destination, StandardCopyOption.REPLACE_EXISTING)
+            }
         } catch (e: IOException) {
-            throw java.lang.RuntimeException("Failed to store file: " + e.message)
+            throw RuntimeException("Failed to store file: ${e.message}", e)
         }
     }
 
     override fun load(filePath: String?): Resource {
         try {
-            val resource: Resource = FileSystemResource(
-                ResourceUtils.getFile(
-                    filePath!!
-                )
-            )
-            if (resource.exists() && resource.isReadable()) {
-                return resource
-            } else {
-                throw FileNotFoundException("Resource not found or not readable.")
+            if (filePath.isNullOrBlank()) {
+                throw IllegalArgumentException("File path must not be null or blank")
             }
+
+            val path = Paths.get(basePath, filePath)
+            if (!Files.exists(path) || !Files.isReadable(path)) {
+                throw RuntimeException("File not found or not readable: $filePath")
+            }
+
+            return FileSystemResource(path)
         } catch (e: Exception) {
             throw RuntimeException("Error loading resource: " + e.message)
         }
@@ -77,8 +83,10 @@ class FileSystemStorage : Storage {
 
     override fun exists(filePath: String?): Boolean {
         try {
-            val fileToCheck: File = ResourceUtils.getFile((basePath + File.separator).toString() + filePath)
-            return fileToCheck.exists() && fileToCheck.isFile()
+            if (filePath.isNullOrBlank()) return false
+
+            val path = basePath?.let { Paths.get(it, filePath) }
+            return Files.exists(path!!) && Files.isRegularFile(path)
         } catch (e: IOException) {
             return false
         }
@@ -98,8 +106,12 @@ class FileSystemStorage : Storage {
 
     override fun rename(currentPath: String?, newName: String?) {
         try {
+            if (currentPath.isNullOrBlank() || newName.isNullOrBlank()) {
+                throw IllegalArgumentException("Current path and new name must not be null or blank")
+            }
+
             val currentFile = Paths.get(basePath!!, currentPath)
-            val renamedFile = currentFile.resolveSibling(newName!!)
+            val renamedFile = currentFile.resolveSibling(newName)
             Files.move(currentFile, renamedFile, StandardCopyOption.REPLACE_EXISTING)
         } catch (e: IOException) {
             throw RuntimeException("Failed to rename file: " + e.message)
@@ -108,9 +120,14 @@ class FileSystemStorage : Storage {
 
     override fun copy(sourcePath: String?, destinationPath: String?) {
         try {
-            val source = basePath?.let { Paths.get(it, sourcePath) }
-            val destination = basePath?.let { Paths.get(it, destinationPath) }
+            if (sourcePath.isNullOrBlank() || destinationPath.isNullOrBlank()) {
+                throw IllegalArgumentException("Source and destination paths must not be null or blank")
+            }
+
+            val source = Paths.get(basePath, sourcePath)
+            val destination = Paths.get(basePath, destinationPath)
             Files.copy(source, destination, StandardCopyOption.REPLACE_EXISTING)
+
         } catch (e: IOException) {
             throw RuntimeException("Failed to copy file or directory: " + e.message)
         }

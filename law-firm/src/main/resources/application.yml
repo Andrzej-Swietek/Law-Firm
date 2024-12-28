@@ -18,7 +18,7 @@ spring:
 
 storage:
   local:
-    base-path: src/main/resources/store
+    base-path: store/
 #    base-path: classpath:store/
 springdoc:
   api-docs:

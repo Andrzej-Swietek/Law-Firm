@@ -89,7 +89,7 @@
         </Pagination.Item>
         <Pagination.Item>
             <Pagination.Link {page}>
-                { page }/{Math.ceil(totalCount/LIMIT) +1}
+                { page }/{Math.ceil(totalCount/LIMIT)}
             </Pagination.Link>
         </Pagination.Item>
         <Pagination.Item>
