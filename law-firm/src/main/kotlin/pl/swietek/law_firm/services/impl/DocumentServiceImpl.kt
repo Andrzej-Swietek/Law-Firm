@@ -78,8 +78,32 @@ class DocumentServiceImpl(
         return documentRepository.saveDocument(document)
     }
 
-    override fun updateDocument(document: Document): Document {
-        return documentRepository.updateDocument(document)
+    override fun updateDocument(
+        id: Long,
+        title: String?,
+        description: String?,
+        typeId: Long?,
+        file: MultipartFile?
+    ): Document {
+        val existingDocument = documentRepository.getDocumentWithAllRelationsById(id)?.first
+        val newTitle = title ?: existingDocument?.title
+        val newDescription = description ?: existingDocument?.description
+        val newTypeId = typeId ?: existingDocument?.typeId
+
+        if (file != null) {
+            val fileName = existingDocument?.filePath
+            val filePath = "$uploadDirectory/$fileName"
+            storage.store(file, filePath)
+        }
+
+        return documentRepository.updateDocument(Document(
+            id = id,
+            title = newTitle!!,
+            description = newDescription!!,
+            typeId = newTypeId!!,
+            filePath = existingDocument?.filePath!!,
+            documentType = null
+        ))
     }
 
     override fun deleteDocument(documentId: Long): Boolean {

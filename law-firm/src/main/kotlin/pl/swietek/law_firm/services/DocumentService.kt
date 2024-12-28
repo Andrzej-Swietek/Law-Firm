@@ -16,7 +16,13 @@ interface DocumentService {
 
     fun saveDocument(documentRequest: DocumentRequest, file: MultipartFile): Document
 
-    fun updateDocument(document: Document): Document
+    fun updateDocument(
+        id: Long,
+        title: String?,
+        description: String?,
+        typeId: Long?,
+        file: MultipartFile?
+    ): Document
 
     fun deleteDocument(documentId: Long): Boolean
 

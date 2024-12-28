@@ -60,15 +60,31 @@ class DocumentController(private val documentService: DocumentService) {
             .body(documentResponse)
     }
 
-    @PutMapping("/{id}")
+//    @PutMapping("/{id}")
+//    fun updateDocument(
+//        @PathVariable id: Long,
+//        @RequestBody document: Document
+//    ): ResponseEntity<Document> {
+//        if (document.id != id) {
+//            return ResponseEntity.badRequest().build()
+//        }
+//        val updatedDocument = documentService.updateDocument(document)
+//        return ResponseEntity.ok(updatedDocument)
+//    }
+
+    @PutMapping("/{id}", consumes = [MediaType.MULTIPART_FORM_DATA_VALUE])
     fun updateDocument(
         @PathVariable id: Long,
-        @RequestBody document: Document
+        @RequestParam("title") title: String?,
+        @RequestParam("description") description: String?,
+        @RequestParam("typeId") typeId: Long?,
+        @RequestPart("file", required = false) file: MultipartFile?
     ): ResponseEntity<Document> {
-        if (document.id != id) {
-            return ResponseEntity.badRequest().build()
+        if (title == null && description == null && typeId == null && file == null) {
+            return ResponseEntity.badRequest().body(null)
         }
-        val updatedDocument = documentService.updateDocument(document)
+
+        val updatedDocument = documentService.updateDocument(id, title, description, typeId, file)
         return ResponseEntity.ok(updatedDocument)
     }
 

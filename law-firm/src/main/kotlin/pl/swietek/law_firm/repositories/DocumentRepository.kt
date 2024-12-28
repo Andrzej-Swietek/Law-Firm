@@ -68,8 +68,20 @@ class DocumentRepository(private val jdbcTemplate: JdbcTemplate) {
     }
 
     fun updateDocument(document: Document): Document {
-        val sql = "UPDATE LawFirm.document SET type_id = ?, file_path = ? WHERE id = ?"
-        jdbcTemplate.update(sql, document.typeId, document.filePath, document.id)
+        val sql = """
+            UPDATE LawFirm.document 
+            SET type_id = ?, title = ?, description = ?, file_path = ?
+            WHERE id = ?
+        """.trimIndent()
+
+        jdbcTemplate.update(
+            sql,
+            document.typeId,
+            document.title,
+            document.description,
+            document.filePath,
+            document.id
+        )
         return document
     }
 
