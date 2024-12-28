@@ -32,14 +32,10 @@
     let selectedDocumentTypeId: number|null = null;
 
     const handleSubmit = async () => {
-        if (!documentData?.title?.trim() || !selectedDocumentTypeId || !documentData?.description?.trim() || !documentData?.file) {
-            toast.error("Please fill out all required fields and upload a file.");
-            return;
-        }
-
         try {
-            documentData.typeId = selectedDocumentTypeId!;
-            console.log(documentData)
+            if (selectedDocumentTypeId)
+                documentData.typeId = selectedDocumentTypeId!;
+
             const response = await updateDocument(documentId, documentData);
 
             if (response) {
@@ -81,7 +77,6 @@
                     id="title"
                     placeholder="Enter document title"
                     bind:value={documentData.title}
-                    required
             />
         </div>
 
@@ -92,7 +87,6 @@
                     id="description"
                     placeholder="Enter document description"
                     bind:value={documentData.description}
-                    required
             />
         </div>
 
@@ -107,7 +101,6 @@
                     on:change={handleFileChange}
                     accept=".pdf,.docx,.txt"
                     type="file"
-                    required
             />
         </div>
 
