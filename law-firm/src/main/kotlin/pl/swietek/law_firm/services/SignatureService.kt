@@ -4,6 +4,8 @@ import pl.swietek.law_firm.models.Signature
 
 interface SignatureService {
 
+    fun getAllSignatures(page: Int, size: Int): List<Signature>
+
     fun getSignatureById(signatureId: Int): Signature?
 
     fun getSignaturesByDocumentId(documentId: Int): List<Signature>

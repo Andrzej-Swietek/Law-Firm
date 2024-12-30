@@ -5,12 +5,14 @@ import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.multipart.MultipartFile
+import pl.swietek.law_firm.exceptions.ValidationException
 import pl.swietek.law_firm.models.Document
 import pl.swietek.law_firm.models.DocumentType
 import pl.swietek.law_firm.models.RequiredDocumentForTrial
 import pl.swietek.law_firm.reponses.DocumentResponse
 import pl.swietek.law_firm.reponses.PaginatedResponse
 import pl.swietek.law_firm.requests.DocumentRequest
+import pl.swietek.law_firm.requests.RequiredDocumentRequest
 import pl.swietek.law_firm.services.DocumentService
 
 @RestController
@@ -97,7 +99,7 @@ class DocumentController(private val documentService: DocumentService) {
         }
     }
 
-    @GetMapping("/required-documents-for-trials")
+    @GetMapping("/required-documents-for-trials/all")
     fun getAllRequiredDocumentsForTrials(): ResponseEntity<List<RequiredDocumentForTrial>> {
         val requiredDocuments = documentService.getAllRequiredDocumentsForTrials()
         return ResponseEntity.ok(requiredDocuments)
@@ -115,10 +117,25 @@ class DocumentController(private val documentService: DocumentService) {
 
     @PostMapping("/required-documents-for-trials")
     fun saveRequiredDocumentForTrial(
-        @RequestBody requiredDocumentForTrial: RequiredDocumentForTrial
+        @RequestBody requiredDocumentForTrial: RequiredDocumentRequest
     ): ResponseEntity<RequiredDocumentForTrial> {
         val savedRequiredDocument = documentService.saveRequiredDocumentForTrial(requiredDocumentForTrial)
         return ResponseEntity.status(HttpStatus.CREATED).body(savedRequiredDocument)
+    }
+
+    @PutMapping("/required-documents-for-trials/{id}")
+    fun updateRequiredDocumentForTrial(
+        @PathVariable id: Long,
+        @RequestBody requiredDocumentForTrial: RequiredDocumentRequest
+    ): ResponseEntity<RequiredDocumentForTrial> {
+        requiredDocumentForTrial.validate()
+
+        if (requiredDocumentForTrial.id != id.toInt())
+            throw ValidationException(listOf("Id Of Entity not matching"))
+
+        return ResponseEntity.ok(
+            documentService.updateRequiredDocumentForTrial(requiredDocumentForTrial)
+        )
     }
 
     @DeleteMapping("/required-documents-for-trials/{id}")

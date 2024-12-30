@@ -3,6 +3,7 @@ import type {Trial} from "$lib/interfaces/trial.interface";
 export interface RequiredDocumentForTrial {
     id: number;
     trialId: number;
+    documentId: number;
 
     trial: Trial;
     document?: Document;

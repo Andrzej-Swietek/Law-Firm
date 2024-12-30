@@ -3,12 +3,22 @@ package pl.swietek.law_firm.controllers
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
+import pl.swietek.law_firm.models.Ruling
 import pl.swietek.law_firm.models.Signature
 import pl.swietek.law_firm.services.SignatureService
 
 @RestController
 @RequestMapping("/api/v1/signatures")
 class SignatureController(private val signatureService: SignatureService) {
+
+    @GetMapping("/all")
+    fun getAllSignatures(
+        @RequestParam(defaultValue = "1") page: Int,
+        @RequestParam(defaultValue = "10") size: Int
+    ): ResponseEntity<List<Signature>> {
+        val signatures = signatureService.getAllSignatures(page, size)
+        return ResponseEntity.ok(signatures)
+    }
 
     @GetMapping("/{id}")
     fun getSignatureById(@PathVariable id: Int): ResponseEntity<Signature> {

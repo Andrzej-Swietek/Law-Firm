@@ -1,11 +1,16 @@
 package pl.swietek.law_firm.repositories
 
 import org.springframework.jdbc.core.JdbcTemplate
+import org.springframework.jdbc.support.GeneratedKeyHolder
+import org.springframework.jdbc.support.KeyHolder
 import org.springframework.stereotype.Repository
 import pl.swietek.law_firm.mappers.DocumentMapper
 import pl.swietek.law_firm.mappers.RequiredDocumentForTrialMapper
 import pl.swietek.law_firm.mappers.TrialMapper
 import pl.swietek.law_firm.models.RequiredDocumentForTrial
+import pl.swietek.law_firm.requests.RequiredDocumentRequest
+import java.sql.Connection
+import java.sql.PreparedStatement
 
 @Repository
 class RequiredDocumentsForTrialRepository(
@@ -34,7 +39,9 @@ class RequiredDocumentsForTrialRepository(
                 -- Document fields
                 d.id AS document_id, 
                 d.type_id AS document_type_id, 
-                d.file_path AS document_file_path
+                d.file_path AS document_file_path,
+                d.title AS document_title,
+                d.description AS document_description
             FROM LawFirm.required_documents_for_trial rdft
             LEFT JOIN LawFirm.trial t ON rdft.trial_id = t.id
             LEFT JOIN LawFirm.document d ON rdft.document_id = d.id
@@ -71,7 +78,9 @@ class RequiredDocumentsForTrialRepository(
                 -- Document fields
                 d.id AS document_id, 
                 d.type_id AS document_type_id, 
-                d.file_path AS document_file_path
+                d.file_path AS document_file_path,
+                d.title AS document_title,
+                d.description AS document_description
             FROM LawFirm.required_documents_for_trial rdft
             LEFT JOIN LawFirm.trial t ON rdft.trial_id = t.id
             LEFT JOIN LawFirm.document d ON rdft.document_id = d.id
@@ -90,23 +99,63 @@ class RequiredDocumentsForTrialRepository(
         }.firstOrNull()
     }
 
-    fun saveRequiredDocumentForTrial(requiredDocumentForTrial: RequiredDocumentForTrial): RequiredDocumentForTrial {
+    fun saveRequiredDocumentForTrial(requiredDocumentForTrial: RequiredDocumentRequest): RequiredDocumentForTrial {
         val sql = """
             INSERT INTO LawFirm.required_documents_for_trial (trial_id, document_id)
             VALUES (?, ?)
         """.trimIndent()
 
-        jdbcTemplate.update(
-            sql,
+        val keyHolder: KeyHolder = GeneratedKeyHolder()
+
+        jdbcTemplate.update({ connection: Connection ->
+            val ps: PreparedStatement = connection.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS)
+            ps.setInt(1, requiredDocumentForTrial.trialId)
+            ps.setInt(2, requiredDocumentForTrial.documentId)
+            ps
+        }, keyHolder)
+
+        val generatedId: Int = keyHolder.keyList
+            .firstOrNull()
+            ?.get("id")
+            .toString().toInt()
+            ?: throw Exception("Failed to retrieve generated ID")
+
+        return RequiredDocumentForTrial(
+            id = generatedId,
+            trialId = requiredDocumentForTrial.trialId,
+            documentId = requiredDocumentForTrial.documentId
+        )
+    }
+
+    fun updateRequiredDocumentForTrial(requiredDocumentForTrial: RequiredDocumentRequest): RequiredDocumentForTrial {
+        val sql = """
+            UPDATE LawFirm.required_documents_for_trial
+            SET trial_id = ?, document_id = ?
+            WHERE id = ?
+        """.trimIndent()
+
+        val rowsUpdated = jdbcTemplate.update(sql,
             requiredDocumentForTrial.trialId,
-            requiredDocumentForTrial.documentId
+            requiredDocumentForTrial.documentId,
+            requiredDocumentForTrial.id
         )
 
-        return requiredDocumentForTrial
+        if (rowsUpdated == 0) {
+            throw Exception("Failed to update RequiredDocumentForTrial with id: ${requiredDocumentForTrial.id}")
+        }
+
+        return RequiredDocumentForTrial(
+            id = requiredDocumentForTrial.id ?: throw Exception("ID is required for update"),
+            trialId = requiredDocumentForTrial.trialId,
+            documentId = requiredDocumentForTrial.documentId
+        )
     }
 
     fun deleteRequiredDocumentForTrial(requiredDocumentId: Int): Boolean {
-        val sql = "DELETE FROM LawFirm.required_documents_for_trial WHERE id = ?"
+        val sql = """
+            DELETE FROM LawFirm.required_documents_for_trial
+            WHERE id = ?
+        """.trimIndent()
         return jdbcTemplate.update(sql, requiredDocumentId) > 0
     }
 }

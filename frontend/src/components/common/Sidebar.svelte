@@ -4,14 +4,21 @@
         email: "user@example.com",
         avatar: "https://images.unsplash.com/photo-1600486913747-55e5470d6f40?auto=format&fit=crop&w=1770&q=80"
     };
-    type MenuOption = { name: string, label: string }
+    type MenuOption = { name: string, label: string, subtabs?: MenuOption[] }
     const menuOptions: MenuOption[] = [
         {  name: 'client', label: 'Client Management'},
         {  name: 'appeal', label: 'Appeal Management'},
         {  name: 'case', label: 'Case Management'},
         {  name: 'court', label: 'Court Management'},
         {  name: 'decision', label: 'Decisions Management'},
-        {  name: 'document', label: 'Documents Management'},
+        {
+            name: 'document',
+            label: 'Documents Management',
+            subtabs: [
+                {  name: 'document/document-type', label: 'Document Types' },
+                {  name: 'document/required-documents', label: 'Required Documents' },
+            ]
+        },
         {  name: 'judge', label: 'Judges Management'},
         {  name: 'lawyer', label: 'Lawyers Management'},
         {  name: 'ruling', label: 'Ruling Management'},
@@ -64,6 +71,44 @@
                                     Create { menuOption.name }
                                 </a>
                             </li>
+
+                            {#if menuOption.subtabs}
+                                {#each menuOption?.subtabs as subtab}
+                                    <li class="px-4">
+                                        <details class="group/item [&_summary::-webkit-details-marker]:hidden">
+                                            <summary
+                                                    class="flex bg-slate-200 cursor-pointer items-center justify-between rounded-lg px-4 py-2 text-gray-500 hover:bg-gray-100 hover:text-gray-700">
+                                                <span class="text-sm font-medium"> { subtab.label } </span>
+
+                                                <span class="shrink-0 transition duration-300 group-open/item:-rotate-180">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" class="size-5" viewBox="0 0 20 20"
+                                                         fill="currentColor">
+                                                        <path fill-rule="evenodd"
+                                                              d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                                                              clip-rule="evenodd" />
+                                                    </svg>
+                                                </span>
+                                            </summary>
+
+                                            <ul class="mt-2 space-y-1 px-4">
+                                                <li>
+                                                    <a href="/{subtab.name}"
+                                                       class="block rounded-lg px-4 py-2 text-sm font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-700">
+                                                        List { subtab.label }
+                                                    </a>
+                                                </li>
+
+                                                <li>
+                                                    <a href="/{subtab.name}/create"
+                                                       class="block rounded-lg px-4 py-2 text-sm font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-700">
+                                                        Create { subtab.label }
+                                                    </a>
+                                                </li>
+                                            </ul>
+                                        </details>
+                                    </li>
+                                {/each}
+                            {/if}
                         </ul>
                     </details>
                 </li>

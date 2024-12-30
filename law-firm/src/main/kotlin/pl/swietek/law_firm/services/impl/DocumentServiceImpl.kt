@@ -11,6 +11,7 @@ import pl.swietek.law_firm.reponses.PaginatedResponse
 import pl.swietek.law_firm.repositories.DocumentRepository
 import pl.swietek.law_firm.repositories.RequiredDocumentsForTrialRepository
 import pl.swietek.law_firm.requests.DocumentRequest
+import pl.swietek.law_firm.requests.RequiredDocumentRequest
 import pl.swietek.law_firm.services.DocumentService
 import pl.swietek.law_firm.storage.Storage
 import java.io.IOException
@@ -129,8 +130,16 @@ class DocumentServiceImpl(
         return requiredDocumentsForTrialRepository.getRequiredDocumentForTrialById(requiredDocumentId)
     }
 
-    override fun saveRequiredDocumentForTrial(requiredDocumentForTrial: RequiredDocumentForTrial): RequiredDocumentForTrial {
-        return requiredDocumentsForTrialRepository.saveRequiredDocumentForTrial(requiredDocumentForTrial)
+    override fun saveRequiredDocumentForTrial(requiredDocumentForTrial: RequiredDocumentRequest): RequiredDocumentForTrial {
+        return requiredDocumentsForTrialRepository.saveRequiredDocumentForTrial(
+            requiredDocumentForTrial
+        )
+    }
+
+    override fun updateRequiredDocumentForTrial(requiredDocumentForTrial: RequiredDocumentRequest): RequiredDocumentForTrial {
+        return requiredDocumentsForTrialRepository.updateRequiredDocumentForTrial(
+            requiredDocumentForTrial
+        )
     }
 
     override fun deleteRequiredDocumentForTrial(requiredDocumentId: Int): Boolean {

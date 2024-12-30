@@ -9,6 +9,9 @@ import pl.swietek.law_firm.services.SignatureService
 class SignatureServiceImpl(
     private val signatureRepository: SignatureRepository
 ) : SignatureService {
+    override fun getAllSignatures(page: Int, size: Int): List<Signature> {
+        return this.signatureRepository.getAllSignatures(page, size);
+    }
 
     override fun getSignatureById(signatureId: Int): Signature? {
        return signatureRepository.getSignatureById(signatureId)

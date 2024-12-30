@@ -11,6 +11,15 @@ class SignatureRepository(
     private val signatureMapper: SignatureMapper
 ) {
 
+    fun getAllSignatures(page: Int, size: Int): List<Signature> {
+        val offset = (page - 1) * size
+        val sql = """
+            SELECT * FROM LawFirm.signature
+            LIMIT ? OFFSET ?
+        """.trimIndent()
+        return jdbcTemplate.query(sql, signatureMapper, size, offset)
+    }
+
     fun getSignatureById(signatureId: Int): Signature? {
         val sql = """
             SELECT s.*, 

@@ -7,6 +7,7 @@ import pl.swietek.law_firm.models.RequiredDocumentForTrial
 import pl.swietek.law_firm.reponses.DocumentResponse
 import pl.swietek.law_firm.reponses.PaginatedResponse
 import pl.swietek.law_firm.requests.DocumentRequest
+import pl.swietek.law_firm.requests.RequiredDocumentRequest
 
 interface DocumentService {
 
@@ -30,7 +31,9 @@ interface DocumentService {
 
     fun getRequiredDocumentForTrialById(requiredDocumentId: Int): RequiredDocumentForTrial?
 
-    fun saveRequiredDocumentForTrial(requiredDocumentForTrial: RequiredDocumentForTrial): RequiredDocumentForTrial
+    fun saveRequiredDocumentForTrial(requiredDocumentForTrial: RequiredDocumentRequest): RequiredDocumentForTrial
+
+    fun updateRequiredDocumentForTrial(requiredDocumentForTrial: RequiredDocumentRequest): RequiredDocumentForTrial
 
     fun deleteRequiredDocumentForTrial(requiredDocumentId: Int): Boolean
 }
