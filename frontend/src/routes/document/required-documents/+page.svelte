@@ -49,8 +49,8 @@ onMount(async ()=>{
    await syncList();
 })
 
-const headers = ['ID', 'Trial', 'Document'];
-const fields = ['id', 'trial.title', 'document.title']
+const headers = ['ID', 'Trial', 'Document', 'Trial Status'];
+const fields = ['id', 'trial.title', 'document.title', 'trial.trialStatus.name']
 </script>
 
 
@@ -61,7 +61,7 @@ const fields = ['id', 'trial.title', 'document.title']
 />
 {#if loading}
     <div class="w-full flex-center !min-h-[50vh] my-16">
-        <LoadingSpinner color="rgb(55 65 81/.7)" />
+        <LoadingSpinner width="150px" height="150px" color="rgb(55 65 81/.7)" />
     </div>
     {:else}
     <EntityTable

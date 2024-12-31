@@ -9,7 +9,7 @@
 
 <aside style="width:{width};height:{height}" class="w-[50px] h-[50px] overflow-hidden">
     <svg
-            class="w-[50px] h-[50px] text-gray-800 dark:text-white"
+            class="w-full h-full text-gray-800 dark:text-white"
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
             viewBox="0 0 24 24"

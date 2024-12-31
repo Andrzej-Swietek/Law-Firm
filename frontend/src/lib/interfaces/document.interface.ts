@@ -5,7 +5,7 @@ export interface RequiredDocumentForTrial {
     trialId: number;
     documentId: number;
 
-    trial: Trial;
+    trial?: Trial;
     document?: Document;
 }
 

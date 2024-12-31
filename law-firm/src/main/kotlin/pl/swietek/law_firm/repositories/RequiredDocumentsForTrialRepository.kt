@@ -36,20 +36,33 @@ class RequiredDocumentsForTrialRepository(
                 t.judge_id AS trial_judge_id, 
                 t.date AS trial_date, 
                 t.case_id AS trial_case_id,
+                 -- Trial Status
+                ts.id AS type_id,
+                ts.name as trial_status_name,
                 -- Document fields
                 d.id AS document_id, 
                 d.type_id AS document_type_id, 
-                d.file_path AS document_file_path,
-                d.title AS document_title,
-                d.description AS document_description
+                d.file_path AS file_path,
+                d.title AS title,
+                d.description AS description,
+                dt.name AS document_type_name,
+                --- Client fields
+                c.id AS client_id,
+                c.first_name AS client_first_name,
+                c.last_name AS client_last_name,
+                c.email AS client_email,
+                c.contact_data_id AS client_contact_data_id
             FROM LawFirm.required_documents_for_trial rdft
             LEFT JOIN LawFirm.trial t ON rdft.trial_id = t.id
             LEFT JOIN LawFirm.document d ON rdft.document_id = d.id
+            LEFT JOIN LawFirm.client c ON t.client_id = c.id
+            LEFT JOIN LawFirm.trial_status ts ON  t.trial_status_id = ts.id
+            LEFT JOIN LawFirm.document_types dt ON d.type_id = dt.id
         """.trimIndent()
 
         return jdbcTemplate.query(sql) { rs, _ ->
             val requiredDocument = requiredDocumentRowMapper.mapRow(rs, 1)
-            val trial = trialRowMapper.mapRow(rs, 1)
+            val trial = trialRowMapper.mapBriefTrial(rs)
             val document = documentRowMapper.mapRow(rs, 1)
 
             requiredDocument.copy(
@@ -75,21 +88,34 @@ class RequiredDocumentsForTrialRepository(
                 t.judge_id AS trial_judge_id, 
                 t.date AS trial_date, 
                 t.case_id AS trial_case_id,
+                -- Trial Status
+                ts.id AS type_id,
+                ts.name as trial_status_name,
                 -- Document fields
                 d.id AS document_id, 
                 d.type_id AS document_type_id, 
                 d.file_path AS document_file_path,
                 d.title AS document_title,
-                d.description AS document_description
+                d.description AS document_description,
+                dt.name AS document_type_name,
+                --- Client fields
+                c.id AS client_id,
+                c.first_name AS client_first_name,
+                c.last_name AS client_last_name,
+                c.email AS client_email,
+                c.contact_data_id AS client_contact_data_id
             FROM LawFirm.required_documents_for_trial rdft
             LEFT JOIN LawFirm.trial t ON rdft.trial_id = t.id
             LEFT JOIN LawFirm.document d ON rdft.document_id = d.id
+            LEFT JOIN LawFirm.client c ON t.client_id = c.id
+            LEFT JOIN LawFirm.trial_status ts ON  t.trial_status_id = ts.id
+            LEFT JOIN LawFirm.document_types dt ON d.type_id = dt.id
             WHERE rdft.id = ?
         """.trimIndent()
 
         return jdbcTemplate.query(sql) { rs, _ ->
             val requiredDocument = requiredDocumentRowMapper.mapRow(rs, 1)
-            val trial = trialRowMapper.mapRow(rs, 1)
+            val trial = trialRowMapper.mapBriefTrial(rs)
             val document = documentRowMapper.mapRow(rs, 1)
 
             requiredDocument.copy(
