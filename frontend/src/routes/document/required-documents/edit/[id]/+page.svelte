@@ -19,13 +19,14 @@
     import {getAllDocument} from "$lib/api/document/getAllDocuments";
     import {getRequiredDocumentById} from "$lib/api/document/requiredDocument/getRequiredDocuemntById";
 
-    import {Card} from "$lib/components/ui/card";
+    import {Card, Content, Description, Header, Title} from "$lib/components/ui/card";
     import * as Table from "$lib/components/ui/table/index";
     import * as Pagination from "$lib/components/ui/pagination";
     import ChevronsUpDown from "lucide-svelte/icons/chevrons-up-down";
     import * as Command from "$lib/components/ui/command/index.js"
     import * as Popover from "$lib/components/ui/popover/index";
     import {cn} from "$lib/utils";
+    import {downloadFileFromStorage} from "$lib/api/storage/downloadFileFromStorage";
 
     let requiredDocuments = $state<RequiredDocumentForTrial>({
         id: $page.params.id,
@@ -60,6 +61,11 @@
         }
     };
 
+    const downloadFile = async() => {
+        if (requiredDocuments?.document?.filePath)
+            await downloadFileFromStorage(requiredDocuments?.document?.filePath)
+    }
+
     onMount(async()=>{
         const [trialsData, documentsData, requiredData] = await Promise.all([
             getAllTrials(1,100000),
@@ -75,7 +81,7 @@
 </script>
 
 <div class="max-w-4xl mx-auto p-8 relative">
-    <h1 class="text-2xl font-bold mb-8">Add New Required Document</h1>
+    <h1 class="text-2xl font-bold mb-8">Update Required Document</h1>
     <Card class="p-6">
         <form
                 class="space-y-4"
@@ -170,4 +176,63 @@
             </Button>
         </form>
     </Card>
+</div>
+
+<div class="flex flex-row w-full gap-4">
+
+    <Card class="flex-1 p-6">
+        <Header>
+            <Title>Currently Saved Document</Title>
+            <h3 class="text-2xl font-black"> { requiredDocuments.document?.title } </h3>
+            <Description>{ requiredDocuments.document?.description }</Description>
+        </Header>
+        <Content>
+            <Description> File: { requiredDocuments.document?.filePath }</Description>
+            <Description class="mt-4"> Type:  <span class="py-2 ml-2 px-4 bg-slate-600 rounded-[10px] text-white"> { requiredDocuments.document?.documentType?.name } </span></Description>
+        </Content>
+        <div class="w-full flex-center gap-4">
+<!--            <a target="_blank" href="http://localhost:8080/api/v1/storage/download?filePath=${encodeURIComponent( requiredDocuments?.document?.filePath ?? '')}">-->
+                <Button on:click={() => downloadFile()}>
+                    Dowload
+                </Button>
+<!--            </a>-->
+            <Button variant="outline" on:click={()=> goto(`/document/edit/${requiredDocuments.documentId}`)}>
+                Details
+            </Button>
+        </div>
+    </Card>
+
+    <Card class="flex-1 p-6">
+        <Header>
+            <Title>Currently Saved Trial</Title>
+            <h3 class="text-2xl font-black"> { requiredDocuments.trial?.title } </h3>
+            <Description>{ requiredDocuments.trial?.description }</Description>
+        </Header>
+        <Content>
+            <Description>Date: { requiredDocuments.trial?.date }</Description>
+            <div class="p-4 my-4 border rounded-[10px]" >
+                <p>Case: { requiredDocuments.trial?.case?.name }</p>
+                <Description>case description: { requiredDocuments.trial?.case?.description }</Description>
+            </div>
+            <div class="p-4 my-4 border rounded-[10px]" >
+                <p>Judge: { requiredDocuments.trial?.client?.firstName } { requiredDocuments.trial?.client?.lastName }</p>
+                <Description>E-mail: { requiredDocuments.trial?.client?.email }</Description>
+            </div>
+            <div class="p-4 my-4 border rounded-[10px]" >
+                <p>Lawyer: { requiredDocuments.trial?.lawyer?.firstName } { requiredDocuments.trial?.lawyer?.lastName }</p>
+                <Description>Specialization: { requiredDocuments.trial?.lawyer?.specialization }</Description>
+            </div>
+            <div class="p-4 my-4 border rounded-[10px]" >
+                <p>Judge: { requiredDocuments.trial?.judge?.firstName } { requiredDocuments.trial?.judge?.lastName }</p>
+                <Description>Court ID: { requiredDocuments.trial?.judge?.courtDivisionId }</Description>
+            </div>
+
+            <div class="w-full flex-center">
+                <Button on:click={() => goto(`/trial/edit/${requiredDocuments.trialId}`)}>
+                    Details
+                </Button>
+            </div>
+        </Content>
+    </Card>
+
 </div>
