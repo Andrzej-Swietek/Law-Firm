@@ -4,10 +4,10 @@ import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.jdbc.support.GeneratedKeyHolder
 import org.springframework.jdbc.support.KeyHolder
 import org.springframework.stereotype.Repository
-import pl.swietek.law_firm.mappers.DocumentMapper
-import pl.swietek.law_firm.mappers.RequiredDocumentForTrialMapper
-import pl.swietek.law_firm.mappers.TrialMapper
+import pl.swietek.law_firm.mappers.*
+import pl.swietek.law_firm.models.Client
 import pl.swietek.law_firm.models.RequiredDocumentForTrial
+import pl.swietek.law_firm.repositories.queryBuilders.RequiredDocumentQueryBuilder
 import pl.swietek.law_firm.requests.RequiredDocumentRequest
 import java.sql.Connection
 import java.sql.PreparedStatement
@@ -17,7 +17,10 @@ class RequiredDocumentsForTrialRepository(
     private val jdbcTemplate: JdbcTemplate,
     private val requiredDocumentRowMapper: RequiredDocumentForTrialMapper,
     private val documentRowMapper: DocumentMapper,
-    private val trialRowMapper: TrialMapper
+    private val trialRowMapper: TrialMapper,
+    private val caseMapper: CaseMapper,
+    private val lawyerMapper: LawyerMapper,
+    private val judgeMapper: JudgeMapper
 ) {
 
     fun getRequiredDocumentsForTrialWithAllRelations(): List<RequiredDocumentForTrial> {
@@ -73,56 +76,47 @@ class RequiredDocumentsForTrialRepository(
     }
 
     fun getRequiredDocumentForTrialById(requiredDocumentId: Int): RequiredDocumentForTrial? {
+
+        val query = RequiredDocumentQueryBuilder()
+            .selectBasic()
+            .withTrial()
+            .withDocument()
+            .build()
+
         val sql = """
-            SELECT 
-                rdft.id AS required_document_id, 
-                rdft.trial_id AS rdft_trial_id, 
-                rdft.document_id AS rdft_document_id,
-                -- Trial fields
-                t.id AS trial_id, 
-                t.title AS trial_title, 
-                t.description AS trial_description, 
-                t.trial_status_id AS trial_status_id, 
-                t.client_id AS trial_client_id, 
-                t.lawyer_id AS trial_lawyer_id, 
-                t.judge_id AS trial_judge_id, 
-                t.date AS trial_date, 
-                t.case_id AS trial_case_id,
-                -- Trial Status
-                ts.id AS type_id,
-                ts.name as trial_status_name,
-                -- Document fields
-                d.id AS document_id, 
-                d.type_id AS document_type_id, 
-                d.file_path AS document_file_path,
-                d.title AS document_title,
-                d.description AS document_description,
-                dt.name AS document_type_name,
-                --- Client fields
-                c.id AS client_id,
-                c.first_name AS client_first_name,
-                c.last_name AS client_last_name,
-                c.email AS client_email,
-                c.contact_data_id AS client_contact_data_id
-            FROM LawFirm.required_documents_for_trial rdft
-            LEFT JOIN LawFirm.trial t ON rdft.trial_id = t.id
-            LEFT JOIN LawFirm.document d ON rdft.document_id = d.id
-            LEFT JOIN LawFirm.client c ON t.client_id = c.id
-            LEFT JOIN LawFirm.trial_status ts ON  t.trial_status_id = ts.id
-            LEFT JOIN LawFirm.document_types dt ON d.type_id = dt.id
+            $query
             WHERE rdft.id = ?
         """.trimIndent()
 
-        return jdbcTemplate.query(sql) { rs, _ ->
+        println(sql)
+
+
+        return jdbcTemplate.query(sql, { rs, _ ->
             val requiredDocument = requiredDocumentRowMapper.mapRow(rs, 1)
             val trial = trialRowMapper.mapBriefTrial(rs)
             val document = documentRowMapper.mapRow(rs, 1)
+            val client = Client(
+                rs.getInt("client_id"),
+                rs.getString("client_first_name"),
+                rs.getString("client_last_name"),
+                rs.getString("client_email"),
+                rs.getInt("client_contact_data_id")
+            )
+
+            val case = caseMapper.mapBriefCase(rs, "case_") ?: null
+            val lawyer  = lawyerMapper.mapBriefLawyer(rs , "lawyer_") ?: null
+            val judge = judgeMapper.mapBriefJudge(rs, "judge_") ?: null
 
             requiredDocument.copy(
-                trial = trial,
+                trial = trial.copy(
+                    client = client,
+                    case = case,
+                    lawyer = lawyer,
+                    judge = judge,
+                ),
                 document = document
             )
-        }.firstOrNull()
+        }, requiredDocumentId).firstOrNull()
     }
 
     fun saveRequiredDocumentForTrial(requiredDocumentForTrial: RequiredDocumentRequest): RequiredDocumentForTrial {

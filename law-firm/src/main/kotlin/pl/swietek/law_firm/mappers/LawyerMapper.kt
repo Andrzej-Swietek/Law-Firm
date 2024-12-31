@@ -15,4 +15,13 @@ class LawyerMapper : RowMapper<Lawyer> {
             specialization = rs.getString("specialization")
         )
     }
+
+    fun mapBriefLawyer(rs: ResultSet, prefix: String =""): Lawyer {
+        return Lawyer(
+            id = rs.getInt("${prefix}id"),
+            firstName = rs.getString("${prefix}first_name"),
+            lastName = rs.getString("${prefix}last_name"),
+            specialization = rs.getString("${prefix}specialization")
+        )
+    }
 }

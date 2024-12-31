@@ -1,12 +1,12 @@
 import apiClient from "$lib/services/apiClient";
 import type {RequiredDocumentForTrial} from "$lib/interfaces/document.interface";
 
-export async function getAllRequiredDocumentById(id: number|string): Promise<RequiredDocumentForTrial[]> {
+export async function getRequiredDocumentById(id: number|string): Promise<RequiredDocumentForTrial|null> {
     try {
-        return await apiClient.get<RequiredDocumentForTrial[]>(
+        return await apiClient.get<RequiredDocumentForTrial>(
             `/api/v1/documents/required-documents-for-trials/${id}`
         )
     } catch (e) {
-        return [];
+        return null;
     }
 }

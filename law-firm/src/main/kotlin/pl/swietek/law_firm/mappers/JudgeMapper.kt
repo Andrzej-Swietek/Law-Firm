@@ -27,4 +27,14 @@ class JudgeMapper : RowMapper<Judge> {
             courtDivision = courtDivision,
         )
     }
+
+    fun mapBriefJudge(rs: ResultSet, prefix: String = ""): Judge {
+        return Judge(
+            id = rs.getInt("${prefix}id"),
+            firstName = rs.getString("${prefix}first_name"),
+            lastName = rs.getString("${prefix}last_name"),
+            courtDivisionId = rs.getInt("${prefix}court_division_id"),
+            courtDivision = null,
+        )
+    }
 }
