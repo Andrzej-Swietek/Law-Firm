@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.multipart.MultipartFile
 import pl.swietek.law_firm.exceptions.ValidationException
+import pl.swietek.law_firm.models.Case
 import pl.swietek.law_firm.models.Document
 import pl.swietek.law_firm.models.DocumentType
 import pl.swietek.law_firm.models.RequiredDocumentForTrial
@@ -113,6 +114,12 @@ class DocumentController(private val documentService: DocumentService) {
         } else {
             ResponseEntity.notFound().build()
         }
+    }
+
+    @GetMapping("/required-documents-for-trials/by-case/{id}")
+    fun getCasesForRequiredDocument(@PathVariable id: Int): ResponseEntity<List<Case>> {
+        val casesForRequiredDocuments = documentService.getCasesForRequiredDocument(id)
+        return ResponseEntity.ok(casesForRequiredDocuments)
     }
 
     @PostMapping("/required-documents-for-trials")

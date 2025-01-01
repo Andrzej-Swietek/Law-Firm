@@ -5,6 +5,7 @@ import org.springframework.jdbc.support.GeneratedKeyHolder
 import org.springframework.jdbc.support.KeyHolder
 import org.springframework.stereotype.Repository
 import pl.swietek.law_firm.mappers.*
+import pl.swietek.law_firm.models.Case
 import pl.swietek.law_firm.models.Client
 import pl.swietek.law_firm.models.RequiredDocumentForTrial
 import pl.swietek.law_firm.repositories.queryBuilders.RequiredDocumentQueryBuilder
@@ -177,5 +178,65 @@ class RequiredDocumentsForTrialRepository(
             WHERE id = ?
         """.trimIndent()
         return jdbcTemplate.update(sql, requiredDocumentId) > 0
+    }
+
+    fun getRequiredDocumentsForCase(caseId: Int): List<RequiredDocumentForTrial> {
+        val query = RequiredDocumentQueryBuilder()
+            .selectBasic()
+            .withTrial()
+            .withDocument()
+            .build()
+
+        val sql = """
+            $query
+            WHERE c.id = ?
+        """.trimIndent()
+
+        return jdbcTemplate.query(sql, { rs, _ ->
+            val requiredDocument = requiredDocumentRowMapper.mapRow(rs, 1)
+            val trial = trialRowMapper.mapBriefTrial(rs)
+            val document = documentRowMapper.mapRow(rs, 1)
+            val client = Client(
+                rs.getInt("client_id"),
+                rs.getString("client_first_name"),
+                rs.getString("client_last_name"),
+                rs.getString("client_email"),
+                rs.getInt("client_contact_data_id")
+            )
+
+            val case = caseMapper.mapBriefCase(rs, "case_") ?: null
+            val lawyer  = lawyerMapper.mapBriefLawyer(rs , "lawyer_") ?: null
+            val judge = judgeMapper.mapBriefJudge(rs, "judge_") ?: null
+
+            requiredDocument.copy(
+                trial = trial.copy(
+                    client = client,
+                    case = case,
+                    lawyer = lawyer,
+                    judge = judge,
+                ),
+                document = document
+            )
+        }, caseId)
+    }
+
+    fun getCasesForRequiredDocument(documentId: Int): List<Case> {
+        val sql = """
+            SELECT
+                c.id AS case_id,
+                c.name AS case_name,
+                c.description AS case_description,
+                c.responsible_lawyer_id AS case_responsible_lawyer_id,
+                c.client_id AS case_client_id
+            FROM LawFirm.required_documents_for_trial rdft
+                INNER JOIN LawFirm.document d on rdft.document_id = d.id
+                INNER JOIN LawFirm.trial t ON rdft.trial_id = t.id
+                INNER JOIN LawFirm.case c ON t.case_id = c.id
+            WHERE d.id = ?
+        """.trimIndent()
+
+        return jdbcTemplate.query(sql, { rs, _ ->
+            caseMapper.mapBriefCase(rs, "case_")
+        }, documentId)
     }
 }

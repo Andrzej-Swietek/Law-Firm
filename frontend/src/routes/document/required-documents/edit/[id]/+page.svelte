@@ -191,11 +191,9 @@
             <Description class="mt-4"> Type:  <span class="py-2 ml-2 px-4 bg-slate-600 rounded-[10px] text-white"> { requiredDocuments.document?.documentType?.name } </span></Description>
         </Content>
         <div class="w-full flex-center gap-4">
-<!--            <a target="_blank" href="http://localhost:8080/api/v1/storage/download?filePath=${encodeURIComponent( requiredDocuments?.document?.filePath ?? '')}">-->
                 <Button on:click={() => downloadFile()}>
-                    Dowload
+                    Download
                 </Button>
-<!--            </a>-->
             <Button variant="outline" on:click={()=> goto(`/document/edit/${requiredDocuments.documentId}`)}>
                 Details
             </Button>

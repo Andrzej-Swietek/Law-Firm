@@ -1,10 +1,10 @@
-import apiClient from "$lib/services/apiClient";
+import apiClient, {BASE_URL} from "$lib/services/apiClient";
 
 export const downloadFileFromStorage = async(storagePath: string): Promise<any> => {
 
     try {
         const response = await fetch(
-            `/api/v1/storage/download?filePath=${encodeURIComponent(storagePath)}`,
+            `${BASE_URL}/api/v1/storage/download?filePath=${encodeURIComponent(storagePath)}`,
             {
                 headers: {
                     accept: 'application/octet-stream',
@@ -22,7 +22,7 @@ export const downloadFileFromStorage = async(storagePath: string): Promise<any> 
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
-        return null;
+        return true;
 
     } catch (e) {
         return null;

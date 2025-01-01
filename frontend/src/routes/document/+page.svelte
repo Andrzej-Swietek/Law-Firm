@@ -28,6 +28,8 @@
 
     const handleEdit = (id: number) => goto(`/document/edit/${id}`);
 
+    const handleDetails = (id: number) => goto(`/document/${id}`);
+
     const handleDelete = async (id: number) => {
         const response = await deleteDocument(id);
         const docsData = await getAllDocument(page, LIMIT);
@@ -79,6 +81,7 @@
         data={documents}
         headers={headers}
         {fields}
+        onDetails={handleDetails}
         onDelete={handleDelete}
         onEdit={handleEdit}
 />

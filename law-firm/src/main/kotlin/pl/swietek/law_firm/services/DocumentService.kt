@@ -1,6 +1,7 @@
 package pl.swietek.law_firm.services
 
 import org.springframework.web.multipart.MultipartFile
+import pl.swietek.law_firm.models.Case
 import pl.swietek.law_firm.models.Document
 import pl.swietek.law_firm.models.DocumentType
 import pl.swietek.law_firm.models.RequiredDocumentForTrial
@@ -36,4 +37,6 @@ interface DocumentService {
     fun updateRequiredDocumentForTrial(requiredDocumentForTrial: RequiredDocumentRequest): RequiredDocumentForTrial
 
     fun deleteRequiredDocumentForTrial(requiredDocumentId: Int): Boolean
+
+    fun getCasesForRequiredDocument(requiredDocumentId: Int): List<Case>
 }

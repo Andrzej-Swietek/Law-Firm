@@ -3,6 +3,7 @@ package pl.swietek.law_firm.services.impl
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.stereotype.Service
 import org.springframework.web.multipart.MultipartFile
+import pl.swietek.law_firm.models.Case
 import pl.swietek.law_firm.models.Document
 import pl.swietek.law_firm.models.DocumentType
 import pl.swietek.law_firm.models.RequiredDocumentForTrial
@@ -144,5 +145,12 @@ class DocumentServiceImpl(
 
     override fun deleteRequiredDocumentForTrial(requiredDocumentId: Int): Boolean {
         return requiredDocumentsForTrialRepository.deleteRequiredDocumentForTrial(requiredDocumentId)
+    }
+
+    override fun getCasesForRequiredDocument(requiredDocumentId: Int): List<Case> {
+        return requiredDocumentsForTrialRepository
+            .getCasesForRequiredDocument(
+                requiredDocumentId
+            )
     }
 }

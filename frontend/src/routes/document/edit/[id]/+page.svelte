@@ -1,5 +1,6 @@
 <script lang="ts">
     import { onMount } from "svelte";
+    import { page } from '$app/stores';
     import { toast } from "svelte-sonner";
 
     import { Button } from "$lib/components/ui/button/index";
@@ -8,15 +9,15 @@
     import { Label } from "$lib/components/ui/label";
 
 
-    import { createDocument } from "$lib/api/document/createDocument";
     import type {Document, DocumentType} from "$lib/interfaces/document.interface";
-    import {getAllDocumentTypes} from "$lib/api/document/documentType/getAllDocumentTypes";
     import {Content, Item, Select, Trigger, Value} from "$lib/components/ui/select";
     import type {FileInputEvents} from "lucide-svelte/icons/file-input.svelte";
-    import {getDocumentById} from "$lib/api/document/getDocumentById";
 
-    import { page } from '$app/stores';
     import {updateDocument} from "$lib/api/document/updateDocument";
+    import {downloadFileFromStorage} from "$lib/api/storage/downloadFileFromStorage";
+    import {getDocumentById} from "$lib/api/document/getDocumentById";
+    import {getAllDocumentTypes} from "$lib/api/document/documentType/getAllDocumentTypes";
+
 
     $: documentId = $page.params.id
 
@@ -52,6 +53,11 @@
     const handleFileChange = (event: any) => {
         documentData.file = event.target.files[0];
     };
+
+    const downloadFile = async() => {
+        if (documentData?.filePath)
+            await downloadFileFromStorage(documentData?.filePath)
+    }
 
     onMount( async ()=>{
         const data = await getDocumentById(documentId);
@@ -102,6 +108,13 @@
                     accept=".pdf,.docx,.txt"
                     type="file"
             />
+
+            <div class="my-4">
+                <Button type="button" on:click={() => downloadFile()}>
+                    Download Current Document
+                </Button>
+            </div>
+
         </div>
 
         <div>
@@ -116,7 +129,7 @@
                     }}
             >
                 <Trigger>
-                    <Value placeholder="Select a trial" />
+                    <Value placeholder={`Select Document Type ... | Current: ${documentData.documentType?.name ?? ''}`} />
                 </Trigger>
                 <Content>
                     {#each documentTypes as docType}
