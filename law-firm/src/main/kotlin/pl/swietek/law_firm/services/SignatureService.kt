@@ -1,6 +1,7 @@
 package pl.swietek.law_firm.services
 
 import pl.swietek.law_firm.models.Signature
+import pl.swietek.law_firm.requests.SignatureRequest
 
 interface SignatureService {
 
@@ -12,7 +13,7 @@ interface SignatureService {
 
     fun getSignaturesByCaseId(caseId: Int): List<Signature>
 
-    fun saveSignature(signature: Signature): Signature
+    fun saveSignature(signature: SignatureRequest): Signature
 
     fun updateSignature(signature: Signature): Signature
 

@@ -100,7 +100,7 @@
 
         {#each cases as caseItem}
             <Card.Root class="w-full px-16 py-8 flex flex-row">
-                <Card.Header>
+                <Card.Header class="flex-1">
                     <Card.Title class="font-black text-xl">{ caseItem.name }</Card.Title>
                     <Card.Description class="text-lg mt-4"> { caseItem.description }  </Card.Description>
                 </Card.Header>

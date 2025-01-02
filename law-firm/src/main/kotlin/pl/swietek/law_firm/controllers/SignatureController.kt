@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import pl.swietek.law_firm.models.Ruling
 import pl.swietek.law_firm.models.Signature
+import pl.swietek.law_firm.requests.SignatureRequest
 import pl.swietek.law_firm.services.SignatureService
 
 @RestController
@@ -43,7 +44,7 @@ class SignatureController(private val signatureService: SignatureService) {
     }
 
     @PostMapping
-    fun saveSignature(@RequestBody signature: Signature): ResponseEntity<Signature> {
+    fun saveSignature(@RequestBody signature: SignatureRequest): ResponseEntity<Signature> {
         val savedSignature = signatureService.saveSignature(signature)
         return ResponseEntity.status(HttpStatus.CREATED).body(savedSignature)
     }

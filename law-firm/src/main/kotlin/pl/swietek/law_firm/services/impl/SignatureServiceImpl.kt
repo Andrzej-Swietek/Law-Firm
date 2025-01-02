@@ -3,7 +3,10 @@ package pl.swietek.law_firm.services.impl
 import org.springframework.stereotype.Service
 import pl.swietek.law_firm.models.Signature
 import pl.swietek.law_firm.repositories.SignatureRepository
+import pl.swietek.law_firm.requests.SignatureRequest
 import pl.swietek.law_firm.services.SignatureService
+import java.time.LocalDate
+import java.time.LocalDateTime
 
 @Service
 class SignatureServiceImpl(
@@ -25,7 +28,14 @@ class SignatureServiceImpl(
         return signatureRepository.getSignaturesByCaseId(caseId)
     }
 
-    override fun saveSignature(signature: Signature): Signature {
+    override fun saveSignature(request: SignatureRequest): Signature {
+        val signature = Signature(
+            id = request.id ?: 0,
+            requiredDocumentId = request.requiredDocumentId,
+            personId = request.personId,
+            role = request.role,
+            date = LocalDate.now(),
+        )
         return signatureRepository.saveSignature(signature)
     }
 

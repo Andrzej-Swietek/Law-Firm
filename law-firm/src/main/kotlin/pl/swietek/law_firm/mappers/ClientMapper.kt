@@ -35,6 +35,17 @@ class ClientMapper : RowMapper<Client> {
         )
     }
 
+    fun mapBriefClient(rs: ResultSet, prefix: String): Client {
+        return Client(
+            id = rs.getInt("${prefix}id"),
+            firstName = rs.getString("${prefix}first_name"),
+            lastName = rs.getString("${prefix}last_name"),
+            email = rs.getString("${prefix}email"),
+            contactDetailsId =  rs.getInt("${prefix}contact_data_id"),
+            contactDetails = null
+        )
+    }
+
 }
 
 @Service

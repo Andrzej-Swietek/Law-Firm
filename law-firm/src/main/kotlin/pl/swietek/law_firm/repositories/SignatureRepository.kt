@@ -4,6 +4,7 @@ import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.stereotype.Repository
 import pl.swietek.law_firm.mappers.SignatureMapper
 import pl.swietek.law_firm.models.Signature
+import pl.swietek.law_firm.repositories.queryBuilders.SignatureQueryBuilder
 
 @Repository
 class SignatureRepository(
@@ -13,20 +14,32 @@ class SignatureRepository(
 
     fun getAllSignatures(page: Int, size: Int): List<Signature> {
         val offset = (page - 1) * size
+
+        val queryBuilder = SignatureQueryBuilder()
+            .selectBasic()
+            .withPersonData()
+            .withRequiredDocument()
+            .withTrial()
+
         val sql = """
-            SELECT * FROM LawFirm.signature
+            ${queryBuilder.build()}
             LIMIT ? OFFSET ?
         """.trimIndent()
+
         return jdbcTemplate.query(sql, signatureMapper, size, offset)
     }
 
     fun getSignatureById(signatureId: Int): Signature? {
-        val sql = """
-            SELECT s.*, 
-                   LawFirm.get_signature_person_data(s.id) AS person_data
-            FROM LawFirm.signature s
-            WHERE s.id = ?
-        """.trimIndent()
+
+        val queryBuilder = SignatureQueryBuilder()
+            .selectBasic()
+            .withPersonData()
+            .withRequiredDocument()
+            .withTrial()
+            .where("s.id = ?")
+
+        val sql = queryBuilder.build()
+        println(sql)
 
         return jdbcTemplate.query(sql, signatureMapper, signatureId).firstOrNull()
     }
@@ -58,15 +71,16 @@ class SignatureRepository(
 
     fun saveSignature(signature: Signature): Signature {
         val sql = """
-            INSERT INTO LawFirm.signature (person_id, role, required_document_id)
-            VALUES ( ?, ?, ?)
+            INSERT INTO LawFirm.signature (person_id, role, required_document_id, date)
+            VALUES ( ?, ?, ?, ?)
         """.trimIndent()
 
         jdbcTemplate.update(
             sql,
             signature.personId,
             signature.role,
-            signature.requiredDocumentId
+            signature.requiredDocumentId,
+            signature.date
         )
 
         return signature

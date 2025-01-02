@@ -1,6 +1,6 @@
 package pl.swietek.law_firm.repositories.queryBuilders
 
-class RequiredDocumentQueryBuilder {
+class RequiredDocumentQueryBuilder : QueryBuilder() {
     private val fields = mutableListOf<String>()
     private val joins = mutableListOf<String>()
 
@@ -45,11 +45,14 @@ class RequiredDocumentQueryBuilder {
         return this
     }
 
-    fun build(): String {
+    override fun build(): String {
         return """
             SELECT ${fields.joinToString(", ")}
             FROM LawFirm.required_documents_for_trial rdft
             ${joins.joinToString(" ")}
         """.trimIndent()
     }
+
+    override fun getFields() = fields
+    override fun getJoins() = joins
 }

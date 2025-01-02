@@ -112,4 +112,18 @@ class TrialMapper(
             ),
         )
     }
+
+    fun mapMinimalTrial(rs: ResultSet): Trial {
+        return Trial(
+            id = rs.getInt("trial_id"),
+            title = rs.getString("trial_title"),
+            description = rs.getString("trial_description"),
+            date = rs.getDate("trial_date").toLocalDate(),
+            trialStatusId = rs.getInt("trial_status_id"),
+            clientId = rs.getInt("trial_client_id"),
+            lawyerId = rs.getInt("trial_lawyer_id"),
+            judgeId = rs.getInt("trial_judge_id"),
+            caseId = rs.getInt("trial_case_id"),
+        )
+    }
 }

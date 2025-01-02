@@ -139,6 +139,9 @@ CREATE TABLE LawFirm.signature
     CONSTRAINT signature_required_document_fk FOREIGN KEY (required_document_id) REFERENCES LawFirm.required_documents_for_trial(id)
 );
 
+ALTER TABLE LawFirm.signature
+    ADD COLUMN date DATE;
+
 CREATE TABLE LawFirm.decision
 (
     id          SERIAL  NOT NULL PRIMARY KEY,
