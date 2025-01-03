@@ -12,11 +12,15 @@
     import * as Popover from "$lib/components/ui/popover/index.js";
     import Check from "lucide-svelte/icons/check";
     import ChevronsUpDown from "lucide-svelte/icons/chevrons-up-down";
-
     import { cn } from "$lib/utils.js";
+
     import type {RequiredDocumentForTrial} from "$lib/interfaces/document.interface";
     import {getAllRequiredDocuments} from "$lib/api/document/requiredDocument/getAllRequiredDocuments";
-    import {Separator} from "$lib/components/ui/separator";
+    import {getAllClients} from "$lib/api/client/getAllClients";
+    import {getAllLawyers} from "$lib/api/lawyer/getAllLawyers";
+    import {getAllJudges} from "$lib/api/judge/getAllJudges";
+    import {createSignature} from "$lib/api/signature/createSignature";
+    import {toast} from "svelte-sonner";
 
     let signature = $state<Omit<Signature, 'id'>>({
         personId: 0,
@@ -34,22 +38,61 @@
     let documentValue = "";
     let selectedDocumentValue: string = $state<string>("");
 
+    let personOpen = $state<boolean>(false);
+    let personValue = "";
+    let selectedPersonValue: string = $state<string>("");
+
+
     $effect(()=>{
         selectedDocumentValue = requiredDocuments.find(
             (rd)=> documentValue === rd.document?.title
         )?.document?.title ?? "Select a Required Document"
     })
 
-    const handleSubmit = async () => {
+    $effect(()=>{
+        const person = people.find((p)=> personValue === `${p.firstName} ${p.lastName}`)
+        selectedPersonValue = person ? `${person.firstName} ${person.lastName}` : "Select a Document Signer"
+    })
 
+    const handleSubmit = async () => {
+        const response = await createSignature({
+            personId: +selectedPersonValue,
+            role: signature.role,
+            requiredDocumentId: +selectedDocumentValue,
+        });
+
+        if (response) {
+            toast.success("Signature successfully created!");
+        } else {
+            toast.error("Failed to create signature. Please try again.");
+        }
     }
 
     function closeAndFocusTrigger(triggerId: string) {
         documentOpen = false;
+        personOpen = false;
         tick().then(() => {
             document.getElementById(triggerId)?.focus();
         });
     }
+
+    $effect(()=>{
+        (async()=>{
+            switch (signature.role) {
+                case 'client':
+                    people = [ ...await getAllClients(1,1000000) ];
+                    break;
+                case 'lawyer':
+                    people = [ ...await getAllLawyers(1,1000000) ];
+                    break;
+                case 'judge':
+                    people = [ ...await getAllJudges(1, 1000000) ];
+                    break;
+            }
+        })()
+    })
+
+    const getSelectedPerson = () => people.find( p => p.id === +selectedPersonValue )
 
     onMount(async()=>{
         const [
@@ -88,6 +131,7 @@
             </Select>
         </div>
 
+        <!-- Required Document -->
         <div class="flex flex-col gap-y-4 w-full">
             <Label>Required Document</Label>
             <Popover.Root bind:open={documentOpen} let:ids>
@@ -97,7 +141,7 @@
                             variant="outline"
                             role="combobox"
                             aria-expanded={documentOpen}
-                            class="w-[200px] justify-between"
+                            class="w-full justify-between"
                     >
                         Document: {requiredDocuments.find( rd => rd.id === +selectedDocumentValue )?.document?.title ?? 'Not selected' }
                         , Trial: {requiredDocuments.find( rd => rd.id === +selectedDocumentValue )?.trial?.title ?? 'Not selected'}
@@ -124,6 +168,46 @@
                                     <div>
                                         Trial: [{requiredDoc?.trial?.id}] {requiredDoc.trial?.title}
                                     </div>
+                                </Command.Item>
+                            {/each}
+                        </Command.Group>
+                    </Command.Root>
+                </Popover.Content>
+            </Popover.Root>
+        </div>
+
+        <div class="flex flex-col gap-y-4 w-full">
+            <Label>Document Signer</Label>
+            <Popover.Root bind:open={personOpen} let:ids>
+                <Popover.Trigger asChild let:builder>
+                    <Button
+                            builders={[builder]}
+                            variant="outline"
+                            role="combobox"
+                            aria-expanded={personOpen}
+                            class="w-full justify-between"
+                    >
+                        {
+                            getSelectedPerson() ? `${ getSelectedPerson()?.firstName } ${ getSelectedPerson()?.lastName }` : 'Not Selected'
+                        }
+                        <ChevronsUpDown class="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                    </Button>
+                </Popover.Trigger>
+                <Popover.Content style="width: 50%" class="p-0">
+                    <Command.Root>
+                        <Command.Input placeholder="Search People ..." />
+                        <Command.Empty>No Person found.</Command.Empty>
+                        <Command.Group>
+                            {#each people as person}
+                                <Command.Item
+                                        value={`${person.id}`}
+                                        onSelect={(currentValue) => {
+                                          selectedPersonValue = currentValue;
+                                          closeAndFocusTrigger(ids.trigger);
+                                        }}
+                                        class="flex flex-col items-center justify-center cursor-pointer"
+                                >
+                                        {person.firstName} {person.lastName}
                                 </Command.Item>
                             {/each}
                         </Command.Group>
