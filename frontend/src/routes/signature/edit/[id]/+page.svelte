@@ -1,6 +1,9 @@
 <script lang="ts">
     import {onMount} from "svelte";
     import { tick } from "svelte";
+    import {toast} from "svelte-sonner";
+    import { page } from '$app/stores';
+    import { goto } from "$app/navigation";
 
     import type {Person} from "$lib/interfaces/person.interface";
     import type { Signature } from "$lib/interfaces/signature.interface";
@@ -20,9 +23,12 @@
     import {getAllLawyers} from "$lib/api/lawyer/getAllLawyers";
     import {getAllJudges} from "$lib/api/judge/getAllJudges";
     import {createSignature} from "$lib/api/signature/createSignature";
-    import {toast} from "svelte-sonner";
+    import {getSignatureById} from "$lib/api/signature/getSignatureById";
+    import {updateSignature} from "$lib/api/signature/updateSignature";
 
-    let signature = $state<Omit<Signature, 'id'>>({
+
+    let signature = $state<Signature>({
+        id: 0,
         personId: 0,
         requiredDocumentId: 0,
         role: 'client'
@@ -35,11 +41,11 @@
 
 
     let documentOpen = $state<boolean>(false);
-    let documentValue = "";
+    let documentValue = $state<string>("");
     let selectedDocumentValue: string = $state<string>("");
 
     let personOpen = $state<boolean>(false);
-    let personValue = "";
+    let personValue = $state<string>("");
     let selectedPersonValue: string = $state<string>("");
 
 
@@ -55,16 +61,17 @@
     })
 
     const handleSubmit = async () => {
-        const response = await createSignature({
+        const response = await updateSignature($page.params.id, {
+            id: $page.params.id,
             personId: +selectedPersonValue,
             role: signature.role,
             requiredDocumentId: +selectedDocumentValue,
         });
 
         if (response) {
-            toast.success("Signature successfully created!");
+            toast.success("Signature successfully updated!");
         } else {
-            toast.error("Failed to create signature. Please try again.");
+            toast.error("Failed to update signature. Please try again.");
         }
     }
 
@@ -96,24 +103,35 @@
 
     onMount(async()=>{
         const [
-            requiredDocumentData
+            requiredDocumentData,
+            signatureData
         ] = await Promise.all([
-            getAllRequiredDocuments()
+            getAllRequiredDocuments(),
+            getSignatureById($page.params.id)
         ]);
 
         requiredDocuments = [...requiredDocumentData];
+        if (!signatureData) goto('/signature')
+        signature = {...signatureData!}
+
+        selectedDocumentValue = signatureData?.requiredDocumentId?.toString() ?? "";
+        documentValue = signatureData?.requiredDocument?.document?.title ?? '';
+        selectedPersonValue = signatureData?.personId?.toString() ?? "";
+        personValue = signatureData?.person?.firstName + " " + signatureData?.person?.lastName
     })
 </script>
 
+
+
 <div class="max-w-4xl mx-auto p-8">
-    <h1 class="text-2xl font-bold mb-16">Create New Signature</h1>
+    <h1 class="text-2xl font-bold mb-16">Edit Signature</h1>
     <form
             class="space-y-4"
             on:submit|preventDefault={handleSubmit}
     >
 
         <div>
-            <Label for="trial">Type of signatory</Label>
+            <Label for="trial">Type of signatory | Current: {signature.role}</Label>
             <Select
                     selected={roles.find((s) => s === signature.role)}
                     onSelectedChange={(selected) => {
@@ -121,7 +139,7 @@
                     }}
             >
                 <Trigger>
-                    <Value placeholder="Select a trial" />
+                    <Value placeholder="Select a type of signatory" />
                 </Trigger>
                 <Content>
                     {#each roles as role}
@@ -133,7 +151,7 @@
 
         <!-- Required Document -->
         <div class="flex flex-col gap-y-4 w-full">
-            <Label>Required Document</Label>
+            <Label>Required Document | {signature?.requiredDocument?.document?.title} {signature?.requiredDocument?.trial?.title}</Label>
             <Popover.Root bind:open={documentOpen} let:ids>
                 <Popover.Trigger asChild let:builder>
                     <Button
@@ -177,7 +195,7 @@
         </div>
 
         <div class="flex flex-col gap-y-4 w-full">
-            <Label>Document Signer</Label>
+            <Label>Document Signer | Current: { signature.person?.firstName }  { signature.person?.lastName }</Label>
             <Popover.Root bind:open={personOpen} let:ids>
                 <Popover.Trigger asChild let:builder>
                     <Button
@@ -207,7 +225,7 @@
                                         }}
                                         class="flex flex-col items-center justify-center cursor-pointer"
                                 >
-                                        {person.firstName} {person.lastName}
+                                    {person.firstName} {person.lastName}
                                 </Command.Item>
                             {/each}
                         </Command.Group>
@@ -218,7 +236,7 @@
 
         <!-- Submit Button -->
         <Button type="submit" class="w-full mt-6">
-            Create Signature
+            Save Signature
         </Button>
     </form>
 </div>
