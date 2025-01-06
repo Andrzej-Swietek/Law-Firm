@@ -150,6 +150,8 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
+
+
 -- LIST OF DECISIONS
 CREATE OR REPLACE FUNCTION LawFirm.get_case_decisions(start_date DATE DEFAULT '2000-01-01')
     RETURNS TABLE(case_name TEXT, decision_name TEXT, decision_description TEXT, decision_date DATE) AS $$
@@ -171,3 +173,40 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
+
+
+-- Funkcję SQL, która na podstawie ID klienta wylicza kwotę do zapłaty za bieżący miesiąc.
+
+CREATE OR REPLACE FUNCTION LawFirm.calculate_monthly_payment(
+    client_id INT,
+    document_cost NUMERIC DEFAULT 100,
+    trial_cost NUMERIC DEFAULT 300
+)
+    RETURNS NUMERIC AS $$
+DECLARE
+    total_payment NUMERIC := 0;
+BEGIN
+
+    -- Suma kosztów dokumentów (100 zł za każdy dokument powiązany z rozprawami w bieżącym miesiącu)
+    total_payment := total_payment + COALESCE((
+      SELECT COUNT(d.id) * document_cost
+      FROM LawFirm.trial t
+               JOIN LawFirm.required_documents_for_trial rd ON rd.trial_id = t.id
+               JOIN LawFirm.document d ON rd.document_id = d.id
+      WHERE t.client_id = calculate_monthly_payment.client_id
+        AND EXTRACT(MONTH FROM t.date) = EXTRACT(MONTH FROM CURRENT_DATE)
+        AND EXTRACT(YEAR FROM t.date) = EXTRACT(YEAR FROM CURRENT_DATE)
+    ), 0);
+
+    -- Suma kosztów rozpraw (300–500 zł za każdą rozprawę w bieżącym miesiącu)
+    total_payment := total_payment + COALESCE((
+      SELECT COUNT(t.id) * trial_cost
+      FROM LawFirm.trial t
+      WHERE t.client_id = calculate_monthly_payment.client_id
+        AND EXTRACT(MONTH FROM t.date) = EXTRACT(MONTH FROM CURRENT_DATE)
+        AND EXTRACT(YEAR FROM t.date) = EXTRACT(YEAR FROM CURRENT_DATE)
+    ), 0);
+
+    RETURN total_payment;
+END;
+$$ LANGUAGE plpgsql;
