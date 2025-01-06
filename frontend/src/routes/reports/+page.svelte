@@ -4,6 +4,8 @@
     import * as Table from "$lib/components/ui/table/index.js";
     import {Card, Header, Title, Content, Description} from '$lib/components/ui/card/index'
     import {Button} from "$lib/components/ui/button";
+    import { Input } from "$lib/components/ui/input";
+
 
     import PageHeader from "@components/table/PageHeader.svelte";
     import {onMount} from "svelte";
@@ -13,6 +15,7 @@
         getReportTopClients, getReportTrialDetails, type ReportLawyerCasesResponse,
         type TopClientsResponse, type TrialDetailsResponse
     } from "$lib/api/reports/report";
+    import {Label} from "$lib/components/ui/label";
 
     let clientsPayments = $state<ClientPayment[]>([])
     let topClients = $state<TopClientsResponse|null>(null);
@@ -40,6 +43,12 @@
         reportLawyerCases = {...reportLawyerCasesData}
     })
 
+    $effect(()=>{
+        (async()=>{
+            if (minClientsCases != null)
+                reportLawyerCases = {...await getReportLawyerCases(minClientsCases)}
+        })()
+    })
 </script>
 
 <PageHeader
@@ -127,6 +136,18 @@
                             </Title>
                         </Header>
                         <Content>
+                            <div class="py-2 flex flex-row gap-4">
+                                <Label class="flex-1 flex-center"> Min. number of trials </Label>
+                                <Input
+                                    type="number"
+                                    placeholder="min number of trials &nbsp;&nbsp; | &nbsp;&nbsp; Default &nbsp;:&nbsp; 0"
+                                    class="w-full flex-1"
+                                    bind:value={minClientsCases}
+                                    min="0"
+                                />
+                                <Button on:click={()=> { minClientsCases = 0; }}> Reset </Button>
+                            </div>
+
                             <Table.Root>
                                 <Table.Header>
                                     <Table.Row>
