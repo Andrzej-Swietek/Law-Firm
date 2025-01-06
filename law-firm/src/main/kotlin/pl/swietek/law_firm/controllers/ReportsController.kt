@@ -3,6 +3,8 @@ package pl.swietek.law_firm.controllers
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import pl.swietek.law_firm.models.ClientPayment
+import pl.swietek.law_firm.reponses.LawyerTrialsCount
+import pl.swietek.law_firm.reponses.LawyerTrialsCountResponse
 import pl.swietek.law_firm.reponses.TopClient
 import pl.swietek.law_firm.reponses.TopClientResponse
 import pl.swietek.law_firm.services.ReportService
@@ -13,8 +15,16 @@ import java.time.LocalDate
 class ReportsController(private val reportService: ReportService) {
 
     @GetMapping("/lawyer-cases")
-    fun getLawyerCases(@RequestParam minCases: Int): List<Pair<String, Int>> {
-        return reportService.generateLawyerCaseReport(minCases)
+    fun getLawyerCases(@RequestParam minCases: Int): ResponseEntity<LawyerTrialsCountResponse> {
+        val lawyersCount=  reportService.generateLawyerCaseReport(minCases).map {
+            it ->  LawyerTrialsCount(it.first, it.second)
+        }
+        return ResponseEntity.ok(
+            LawyerTrialsCountResponse(
+                lawyers = lawyersCount,
+                count = lawyersCount.size
+            )
+        )
     }
 
     @GetMapping("/trial-details")

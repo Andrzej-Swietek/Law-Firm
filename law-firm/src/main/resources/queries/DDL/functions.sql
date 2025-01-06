@@ -62,7 +62,7 @@ BEGIN
     RETURN QUERY
         SELECT
             l.first_name || ' ' || l.last_name AS lawyer_name,
-            COUNT(c.id) AS case_count
+            COUNT(c.id)::INTEGER AS case_count
         FROM
             LawFirm.case c
                 INNER JOIN
