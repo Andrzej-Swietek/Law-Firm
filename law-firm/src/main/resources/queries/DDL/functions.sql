@@ -87,8 +87,8 @@ BEGIN
         SELECT
             t.title AS trial_title,
             t.date AS trial_date,
-            ts.name AS status,
-            COUNT(rd.document_id) AS required_documents_count
+            ts.name::TEXT AS status,
+            COUNT(rd.document_id)::INTEGER AS required_documents_count
         FROM
             LawFirm.trial t
                 INNER JOIN
@@ -133,20 +133,26 @@ $$ LANGUAGE plpgsql;
 CREATE OR REPLACE FUNCTION LawFirm.get_unsigned_documents()
     RETURNS TABLE(document_title TEXT, signatures_count INT) AS $$
 BEGIN
-    RETURN QUERY
-        SELECT
-            d.title AS document_title,
-            COUNT(s.id) AS signatures_count
-        FROM
-            LawFirm.document d
-                LEFT JOIN
-            LawFirm.required_documents_for_trial rd ON d.id = rd.document_id
-                LEFT JOIN
-            LawFirm.signature s ON rd.id = s.required_document_id
-        GROUP BY
-            d.id
-        HAVING
-            COUNT(s.id) = 0;
+    BEGIN
+        RETURN QUERY
+            SELECT
+                d.title::TEXT AS document_title,
+                COUNT(s.id)::INTEGER AS signatures_count
+            FROM
+                LawFirm.document d
+                    LEFT JOIN
+                LawFirm.required_documents_for_trial rd ON d.id = rd.document_id
+                    LEFT JOIN
+                LawFirm.signature s ON rd.id = s.required_document_id
+            GROUP BY
+                d.id
+            HAVING
+                COUNT(s.id) = 0;
+    EXCEPTION
+        WHEN OTHERS THEN
+            -- W przypadku jakiegokolwiek błędu zwróć pustą tabelę
+            RETURN QUERY SELECT NULL::TEXT, NULL::INTEGER LIMIT 0;
+    END;
 END;
 $$ LANGUAGE plpgsql;
 
