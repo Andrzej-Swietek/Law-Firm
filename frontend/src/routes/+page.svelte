@@ -1,2 +1,20 @@
-<h1>Welcome to SvelteKit</h1>
-<p>Visit <a href="https://svelte.dev/docs/kit">svelte.dev/docs/kit</a> to read the documentation</p>
+<script lang="ts">
+    import {goto} from "$app/navigation";
+    import * as Resizable from "$lib/components/ui/resizable/index.js";
+    import {Card, Header, Title, Content, Description} from '$lib/components/ui/card/index'
+    import {Button} from "$lib/components/ui/button";
+</script>
+
+<section>
+    <Card>
+        <Header>
+            <Title> Reports </Title>
+            <Description>
+                Summary data for lawyers, clients and cases
+            </Description>
+        </Header>
+        <Content>
+            <Button on:click={()=> goto(`/reports`) }> More </Button>
+        </Content>
+    </Card>
+</section>
