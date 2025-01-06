@@ -3,6 +3,8 @@ package pl.swietek.law_firm.controllers
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import pl.swietek.law_firm.models.ClientPayment
+import pl.swietek.law_firm.reponses.TopClient
+import pl.swietek.law_firm.reponses.TopClientResponse
 import pl.swietek.law_firm.services.ReportService
 import java.time.LocalDate
 
@@ -21,8 +23,18 @@ class ReportsController(private val reportService: ReportService) {
     }
 
     @GetMapping("/top-clients")
-    fun getTopClients(@RequestParam(defaultValue = "10") limit: Int): List<Pair<String, Int>> {
-        return reportService.getTopClients(limit)
+    fun getTopClients(
+            @RequestParam(defaultValue = "10"
+        ) limit: Int): ResponseEntity<TopClientResponse>
+    {
+        val topClients = reportService.getTopClients(limit)
+        return ResponseEntity.ok(
+          TopClientResponse(
+              topClients.map {
+                  it -> TopClient(it.first, it.second)
+              }
+          )
+        )
     }
 
     @GetMapping("/unsigned-documents")

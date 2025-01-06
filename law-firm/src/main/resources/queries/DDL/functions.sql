@@ -113,7 +113,7 @@ BEGIN
     RETURN QUERY
         SELECT
             c.first_name || ' ' || c.last_name AS client_name,
-            COUNT(t.id) AS trial_count
+            COUNT(t.id)::INTEGER AS trial_count
         FROM
             LawFirm.client c
                 LEFT JOIN
