@@ -35,6 +35,9 @@
         lawyers = [...await getAllTrials(page,LIMIT)]
     }
 
+    const handleDetails = (id: number) => goto(`/trial/${id}`);
+
+
     onMount(async ()=>{
         const response = await getAllTrials(page,LIMIT)
         lawyers = [...response]
@@ -55,6 +58,7 @@
         {fields}
         onDelete={handleDelete}
         onEdit={handleEdit}
+        onDetails={handleDetails}
 />
 <Pagination.Root count={100} perPage={10} let:pages let:currentPage>
     <Pagination.Content>

@@ -37,6 +37,12 @@ class SignatureController(private val signatureService: SignatureService) {
         return ResponseEntity.ok(signatures)
     }
 
+    @GetMapping("/required-document/{requiredDocumentId}")
+    fun getSignaturesByRequiredDocumentId(@PathVariable requiredDocumentId: Int): ResponseEntity<List<Signature>> {
+        val signatures = signatureService.getSignaturesByRequiredDocumentId(requiredDocumentId)
+        return ResponseEntity.ok(signatures)
+    }
+
     @GetMapping("/case/{caseId}")
     fun getSignaturesByCaseId(@PathVariable caseId: Int): ResponseEntity<List<Signature>> {
         val signatures = signatureService.getSignaturesByCaseId(caseId)

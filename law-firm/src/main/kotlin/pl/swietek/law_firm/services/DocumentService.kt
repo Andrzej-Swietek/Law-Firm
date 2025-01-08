@@ -32,6 +32,8 @@ interface DocumentService {
 
     fun getRequiredDocumentForTrialById(requiredDocumentId: Int): RequiredDocumentForTrial?
 
+    fun getRequiredDocumentsByTrialId(trialId: Int): List<RequiredDocumentForTrial>
+
     fun saveRequiredDocumentForTrial(requiredDocumentForTrial: RequiredDocumentRequest): RequiredDocumentForTrial
 
     fun updateRequiredDocumentForTrial(requiredDocumentForTrial: RequiredDocumentRequest): RequiredDocumentForTrial

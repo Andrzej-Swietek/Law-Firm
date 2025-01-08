@@ -120,6 +120,46 @@ class RequiredDocumentsForTrialRepository(
         }, requiredDocumentId).firstOrNull()
     }
 
+    fun getRequiredDocumentsByTrialId(trialId: Int): List<RequiredDocumentForTrial> {
+        val query = RequiredDocumentQueryBuilder()
+            .selectBasic()
+            .withTrial()
+            .withDocument()
+            .build()
+
+        val sql = """
+            $query
+            WHERE rdft.trial_id = ?
+        """.trimIndent()
+
+        return jdbcTemplate.query(sql, { rs, _ ->
+            val requiredDocument = requiredDocumentRowMapper.mapRow(rs, 1)
+            val trial = trialRowMapper.mapBriefTrial(rs)
+            val document = documentRowMapper.mapRow(rs, 1)
+            val client = Client(
+                rs.getInt("client_id"),
+                rs.getString("client_first_name"),
+                rs.getString("client_last_name"),
+                rs.getString("client_email"),
+                rs.getInt("client_contact_data_id")
+            )
+
+            val case = caseMapper.mapBriefCase(rs, "case_") ?: null
+            val lawyer  = lawyerMapper.mapBriefLawyer(rs , "lawyer_") ?: null
+            val judge = judgeMapper.mapBriefJudge(rs, "judge_") ?: null
+
+            requiredDocument.copy(
+                trial = trial.copy(
+                    client = client,
+                    case = case,
+                    lawyer = lawyer,
+                    judge = judge,
+                ),
+                document = document
+            )
+        }, trialId)
+    }
+
     fun saveRequiredDocumentForTrial(requiredDocumentForTrial: RequiredDocumentRequest): RequiredDocumentForTrial {
         val sql = """
             INSERT INTO LawFirm.required_documents_for_trial (trial_id, document_id)

@@ -28,6 +28,10 @@ class SignatureServiceImpl(
         return signatureRepository.getSignaturesByCaseId(caseId)
     }
 
+    override fun getSignaturesByRequiredDocumentId(requiredDocumentId: Int): List<Signature> {
+        return this.signatureRepository.getSignaturesByRequiredDocumentId(requiredDocumentId)
+    }
+
     override fun saveSignature(request: SignatureRequest): Signature {
         val signature = Signature(
             id = request.id ?: 0,

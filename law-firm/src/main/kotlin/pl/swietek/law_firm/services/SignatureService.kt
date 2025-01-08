@@ -13,6 +13,8 @@ interface SignatureService {
 
     fun getSignaturesByCaseId(caseId: Int): List<Signature>
 
+    fun getSignaturesByRequiredDocumentId(requiredDocumentId: Int): List<Signature>
+
     fun saveSignature(signature: SignatureRequest): Signature
 
     fun updateSignature(signature: Signature): Signature

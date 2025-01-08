@@ -122,6 +122,12 @@ class DocumentController(private val documentService: DocumentService) {
         return ResponseEntity.ok(casesForRequiredDocuments)
     }
 
+    @GetMapping("/required-documents-for-trials/by-trial/{id}")
+    fun getRequiredDocumentsByTrialId(@PathVariable id: Int): ResponseEntity<List<RequiredDocumentForTrial>> {
+        val requiredDocuments = documentService.getRequiredDocumentsByTrialId(id);
+        return ResponseEntity.ok(requiredDocuments)
+    }
+
     @PostMapping("/required-documents-for-trials")
     fun saveRequiredDocumentForTrial(
         @RequestBody requiredDocumentForTrial: RequiredDocumentRequest

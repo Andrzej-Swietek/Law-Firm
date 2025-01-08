@@ -6,6 +6,7 @@ export interface Signature {
     personId: number,
     role: String,
     requiredDocumentId: number,
+    date?: string,
 
     requiredDocument?: RequiredDocumentForTrial;
     person?: Person

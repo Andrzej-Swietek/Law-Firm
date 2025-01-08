@@ -56,6 +56,27 @@ class SignatureRepository(
         return jdbcTemplate.query(sql, signatureMapper, documentId)
     }
 
+    fun getSignaturesByRequiredDocumentId(requiredDocumentId: Int): List<Signature> {
+//        val sql = """
+//            SELECT s.*,
+//                   LawFirm.get_signature_person_data(s.id) AS person_data
+//            FROM LawFirm.signature s
+//            JOIN LawFirm.required_documents_for_trial rdft ON s.required_document_id = rdft.id
+//            WHERE rdft.id = ?
+//        """.trimIndent()
+
+        val queryBuilder = SignatureQueryBuilder()
+            .selectBasic()
+            .withPersonData()
+            .withRequiredDocument()
+            .withTrial()
+            .where("rdft.id = ?")
+
+        val sql = queryBuilder.build()
+
+        return jdbcTemplate.query(sql, signatureMapper, requiredDocumentId)
+    }
+
     fun getSignaturesByCaseId(caseId: Int): List<Signature> {
         val sql = """
             SELECT s.*, 
