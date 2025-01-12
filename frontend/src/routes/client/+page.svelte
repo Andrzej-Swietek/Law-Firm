@@ -37,7 +37,6 @@
 
     onMount(async ()=>{
         const response = await getAllClients(page,LIMIT)
-        console.log(response)
         clients = [...response]
     })
 

@@ -7,6 +7,7 @@ export interface Decision {
     description: string;
     date: string;
     caseID: number;
+    caseId?: number;
 
     case?: Case;
 }
