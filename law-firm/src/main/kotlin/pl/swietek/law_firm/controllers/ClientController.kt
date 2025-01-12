@@ -30,6 +30,20 @@ class ClientController(private val clientService: ClientService) {
         return ResponseEntity.ok(client)
     }
 
+    @GetMapping("/by-email/{email}")
+    fun getClientByEmail(@PathVariable email: String): ResponseEntity<Client> {
+        val client = clientService.getClientByEmail(email)
+            ?: return ResponseEntity.notFound().build()
+        return ResponseEntity.ok(client)
+    }
+
+    @GetMapping("/by-lawyer/{lawyerId}")
+    fun getClientsByLawyerId(@PathVariable lawyerId: Int): ResponseEntity<List<Client>> {
+        return ResponseEntity.ok(
+            clientService.getClientByLawyerId(lawyerId)
+        )
+    }
+
 
     @PostMapping
     fun createClient(@RequestBody @Valid clientRequest: ClientRequest): ResponseEntity<Client> {

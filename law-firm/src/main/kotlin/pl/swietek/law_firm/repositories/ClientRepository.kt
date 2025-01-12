@@ -73,6 +73,36 @@ class ClientRepository(private val jdbcTemplate: JdbcTemplate) {
         return jdbcTemplate.query(sql, clientRowMapper, email).firstOrNull()
     }
 
+    fun getClientByLawyerId(lawyerId: Int): List<Client> {
+        val sql = """
+            SELECT DISTINCT 
+                cl.*, 
+                cd.id AS cd_id, 
+                cd.phone_number, 
+                cd.email AS cd_email, 
+                cd.street, 
+                cd.city, 
+                cd.state, 
+                cd.zip_code, 
+                cd.country
+            FROM LawFirm.client cl
+                LEFT JOIN LawFirm.contact_data cd ON cl.contact_data_id = cd.id
+            WHERE cl.id IN (
+                -- Klienci związani z tabelą case, gdzie prawnik jest odpowiedzialny
+                SELECT c.client_id
+                FROM LawFirm.case c
+                    WHERE c.responsible_lawyer_id = ?
+                UNION
+                -- Klienci związani z tabelą trial, gdzie prawnik uczestniczy w rozprawie
+                SELECT t.client_id
+                FROM LawFirm.trial t
+                    WHERE t.lawyer_id = ?
+            )
+        """.trimIndent()
+
+        return jdbcTemplate.query(sql, clientRowMapper, lawyerId, lawyerId)
+    }
+
     fun saveClient(client: Client): Client {
         val sql = """
             INSERT INTO LawFirm.client (first_name, last_name, email, contact_data_id)

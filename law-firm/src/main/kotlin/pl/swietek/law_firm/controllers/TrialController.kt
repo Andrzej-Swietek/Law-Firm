@@ -36,6 +36,19 @@ class TrialController(private val trialService: TrialService) {
         }
     }
 
+    @GetMapping("/client/{id}")
+    fun getTrialByClientId(@PathVariable id: Int): ResponseEntity<List<Trial>> {
+        val trials = trialService.getTrialsByClientId(id)
+        return ResponseEntity.ok(trials)
+    }
+
+    @GetMapping("/lawyer/{id}")
+    fun getTrialByLawyerId(@PathVariable id: Int):  ResponseEntity<List<Trial>> {
+        val trials = trialService.getTrialsByLawyerId(id)
+        return ResponseEntity.ok(trials)
+    }
+
+
     @PostMapping
     fun saveTrial(@RequestBody trial: TrialRequest): ResponseEntity<Trial> {
         trial.validate()

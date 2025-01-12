@@ -39,8 +39,8 @@ class CaseController(private val caseService: CaseService) {
     @GetMapping("/client/{clientId}")
     fun getCasesByClientId(
         @PathVariable clientId: Int,
-        @RequestParam page: Int,
-        @RequestParam size: Int
+        @RequestParam(defaultValue = "1") page: Int,
+        @RequestParam(defaultValue = "10") size: Int
     ): ResponseEntity<List<Case>> {
         val cases = caseService.getCasesByClientId(clientId, page, size)
         return ResponseEntity.ok(cases)

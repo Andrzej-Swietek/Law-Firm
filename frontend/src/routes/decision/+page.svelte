@@ -40,7 +40,7 @@
     })
 
     const headers = ["ID", "Name", "Description", "Date", "Case"];
-    const fields = ["id", "name", "Description", "date", "case.name"];
+    const fields = ["id", "name", "description", "date", "case.name"];
 </script>
 
 <PageHeader

@@ -24,6 +24,14 @@ class ClientServiceImpl(
         return clientRepository.getClientById(id)
     }
 
+    override fun getClientByEmail(email: String): Client? {
+        return clientRepository.getClientByEmail(email)
+    }
+
+    override fun getClientByLawyerId(lawyerId: Int): List<Client> {
+        return clientRepository.getClientByLawyerId(lawyerId)
+    }
+
     override fun createClient(clientRequest: ClientRequest): Client {
         clientRequest.validate()
 

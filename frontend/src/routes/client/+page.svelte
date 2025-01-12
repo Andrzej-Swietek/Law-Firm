@@ -56,6 +56,7 @@
         {fields}
         onDelete={handleDeleteClient}
         onEdit={handleEditClient}
+        onDetails={(id)=> goto(`/client/${id}`)}
 />
 <Pagination.Root count={100} perPage={10} let:pages let:currentPage>
     <Pagination.Content>

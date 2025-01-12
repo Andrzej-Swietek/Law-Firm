@@ -48,4 +48,5 @@
         {fields}
         onDelete={handleDeleteClient}
         onEdit={handleEdit}
+        showDetails={false}
 />

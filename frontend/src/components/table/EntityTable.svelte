@@ -9,6 +9,7 @@
         onDelete?: (id: number) => void,
         onDetails?: (id: number) => void,
         onEdit?: (id: number) => void,
+        showDetails?: boolean
     }
 
     let {
@@ -18,6 +19,7 @@
         onDelete = () => {} ,
         onDetails = () => {},
         onEdit = () => {},
+        showDetails = true
     }: Props = $props();
 
     import * as Table from "$lib/components/ui/table/index";
@@ -45,7 +47,9 @@
                         <Table.Cell>{ field.split(".").length === 1? item[field] : getNestedValue(item, field)}</Table.Cell>
                     {/each}
                     <Table.Cell class="text-right">
-                        <Button on:click={() => onDetails(item.id)} variant="outline">Details</Button>
+                        {#if showDetails}
+                            <Button on:click={() => onDetails(item.id)} variant="outline">Details</Button>
+                        {/if}
                         <Button on:click={() => onEdit(item.id)} variant="outline">Edit</Button>
                         <DeleteBtn onClick={() => onDelete(item.id)} />
                     </Table.Cell>

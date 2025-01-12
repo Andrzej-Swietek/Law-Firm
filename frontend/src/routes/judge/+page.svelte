@@ -55,6 +55,7 @@
         {fields}
         onDelete={handleDeleteClient}
         onEdit={handleEdit}
+        showDetails={false}
 />
 <Pagination.Root count={100} perPage={10} let:pages let:currentPage>
     <Pagination.Content>

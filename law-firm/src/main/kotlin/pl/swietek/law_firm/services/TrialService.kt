@@ -11,6 +11,10 @@ interface TrialService {
 
     fun getTrialById(trialId: Int): Trial?
 
+    fun getTrialsByClientId(clientId: Int): List<Trial>
+
+    fun getTrialsByLawyerId(lawyerId: Int): List<Trial>
+
     fun saveTrial(trial: TrialRequest): Trial
 
     fun updateTrial(trial: TrialRequest): Trial

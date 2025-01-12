@@ -46,6 +46,26 @@ class TrialRepository(
         return jdbcTemplate.query(sql, trialRowMapper, trialId).firstOrNull()
     }
 
+    fun getTrialsByClientId(clientId: Int): List<Trial> {
+        val sql = """
+            SELECT * 
+            FROM LawFirm.full_data_trial
+            WHERE client_id = ?
+        """.trimIndent()
+
+        return jdbcTemplate.query(sql, trialRowMapper, clientId)
+    }
+
+    fun getTrialsByLawyerId(lawyerId: Int): List<Trial> {
+        val sql = """
+            SELECT * 
+            FROM LawFirm.full_data_trial
+            WHERE lawyer_id = ?
+        """.trimIndent()
+
+        return jdbcTemplate.query(sql, trialRowMapper, lawyerId)
+    }
+
     fun saveTrial(trial: TrialRequest): Trial {
         val sql = """
             INSERT INTO LawFirm.trial (

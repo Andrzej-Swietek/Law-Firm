@@ -10,3 +10,19 @@ export async function getTrialById(id: string|number): Promise<Trial|null> {
         return null;
     }
 }
+
+export async function getTrialByClientId(id: string|number): Promise<Trial[]> {
+    try {
+        return await apiClient.get<Trial[]>(`/api/v1/trials/client/${id}`)
+    } catch (e) {
+        return [];
+    }
+}
+
+export async function getTrialByLawyerId(id: string|number): Promise<Trial[]> {
+    try {
+        return await apiClient.get<Trial[]>(`/api/v1/trials/lawyer/${id}`)
+    } catch (e) {
+        return [];
+    }
+}
