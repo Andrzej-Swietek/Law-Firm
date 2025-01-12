@@ -134,6 +134,9 @@ class DocumentServiceImpl(
     override fun getRequiredDocumentsByTrialId(trialId: Int): List<RequiredDocumentForTrial> {
         return requiredDocumentsForTrialRepository.getRequiredDocumentsByTrialId(trialId)
     }
+    override fun getRequiredDocumentsForCase(caseId: Int): List<RequiredDocumentForTrial> {
+        return requiredDocumentsForTrialRepository.getRequiredDocumentsForCase(caseId)
+    }
 
     override fun saveRequiredDocumentForTrial(requiredDocumentForTrial: RequiredDocumentRequest): RequiredDocumentForTrial {
         return requiredDocumentsForTrialRepository.saveRequiredDocumentForTrial(

@@ -25,6 +25,20 @@ class RulingRepository(
         return jdbcTemplate.queryForObject(sql, rulingMapper, rulingId)
     }
 
+    fun getRulingByCaseId(caseId: Int): List<Ruling> {
+        val sql = """
+            SELECT 
+                r.*, 
+                t.id AS ruling_trial_id, 
+                t.title AS trial_title
+            FROM LawFirm.ruling r
+            LEFT JOIN LawFirm.trial t ON r.trial_id = t.id
+            WHERE t.case_id = ?
+        """.trimIndent()
+
+        return jdbcTemplate.query(sql, rulingMapper, caseId)
+    }
+
     fun getAllRulings(page: Int, size: Int): List<Ruling> {
         val offset = (page - 1) * size
         val sql = """

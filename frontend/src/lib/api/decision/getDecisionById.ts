@@ -8,3 +8,11 @@ export async function getDecisionById(id: string): Promise<Decision|null> {
         return null;
     }
 }
+
+export async function getDecisionsByCaseId(id: string): Promise<Decision[]> {
+    try {
+        return await apiClient.get<Decision[]>(`/api/v1/decisions/case/${id}`)
+    } catch (e) {
+        return [];
+    }
+}

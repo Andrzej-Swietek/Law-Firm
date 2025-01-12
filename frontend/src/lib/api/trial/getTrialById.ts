@@ -26,3 +26,11 @@ export async function getTrialByLawyerId(id: string|number): Promise<Trial[]> {
         return [];
     }
 }
+
+export async function getTrialsByCaseId(id: string|number): Promise<Trial[]> {
+    try {
+        return await apiClient.get<Trial[]>(`/api/v1/trials/case/${id}`)
+    } catch (e) {
+        return [];
+    }
+}

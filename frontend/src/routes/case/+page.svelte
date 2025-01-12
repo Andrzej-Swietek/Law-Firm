@@ -52,6 +52,8 @@
         headers={headers}
         {fields}
         onDelete={handleDelete}
+        onEdit={(id)=>goto(`/case/edit/${id}`)}
+        onDetails={(id)=>goto(`/case/${id}`)}
 />
 <Pagination.Root count={100} perPage={10} let:pages let:currentPage>
     <Pagination.Content>

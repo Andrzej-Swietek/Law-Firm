@@ -29,6 +29,13 @@ class DecisionController(private val decisionService: DecisionService) {
         }
     }
 
+    @GetMapping("/case/{id}")
+    fun getDecisionByCaseId(@PathVariable id: Int): ResponseEntity<List<Decision>> {
+        val decisions = decisionService.getDecisionsByCaseId(id)
+        return ResponseEntity.ok(decisions)
+    }
+
+
     @PostMapping
     fun saveDecision(@RequestBody decision: Decision): ResponseEntity<Decision> {
         val savedDecision = decisionService.saveDecision(decision)

@@ -31,6 +31,10 @@ class TrialServiceImpl (private val trialRepository: TrialRepository): TrialServ
        return trialRepository.getTrialsByLawyerId(lawyerId)
     }
 
+    override fun getTrialsByCaseId(caseId: Int): List<Trial> {
+        return trialRepository.getTrialsByCaseId(caseId)
+    }
+
     override fun saveTrial(trial: TrialRequest): Trial {
         return trialRepository.saveTrial(trial)
     }

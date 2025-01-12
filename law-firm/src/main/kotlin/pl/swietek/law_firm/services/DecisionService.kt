@@ -8,6 +8,7 @@ interface DecisionService {
 
     fun getDecisionById(decisionId: Int): Decision?
 
+    fun getDecisionsByCaseId(decisionId: Int): List<Decision>
 
     fun saveDecision(decision: Decision): Decision
 

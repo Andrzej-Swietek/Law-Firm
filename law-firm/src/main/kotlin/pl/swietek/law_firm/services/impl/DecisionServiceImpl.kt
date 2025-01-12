@@ -19,6 +19,10 @@ class DecisionServiceImpl(private val decisionRepository: DecisionRepository): D
         return decisionRepository.getDecisionById(decisionId)
     }
 
+    override fun getDecisionsByCaseId(decisionId: Int): List<Decision> {
+        return decisionRepository.getDecisionsByCaseId(decisionId)
+    }
+
     override fun saveDecision(decision: Decision): Decision {
         return decisionRepository.saveDecision(decision)
     }

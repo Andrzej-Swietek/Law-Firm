@@ -229,7 +229,7 @@ class RequiredDocumentsForTrialRepository(
 
         val sql = """
             $query
-            WHERE c.id = ?
+            WHERE cs.id = ?
         """.trimIndent()
 
         return jdbcTemplate.query(sql, { rs, _ ->

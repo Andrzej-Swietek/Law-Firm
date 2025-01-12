@@ -4,7 +4,7 @@ import type {RequiredDocumentForTrial} from "$lib/interfaces/document.interface"
 export interface Signature {
     id: number,
     personId: number,
-    role: String,
+    role: string,
     requiredDocumentId: number,
     date?: string,
 

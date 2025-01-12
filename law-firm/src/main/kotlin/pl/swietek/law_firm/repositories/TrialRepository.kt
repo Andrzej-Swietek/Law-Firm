@@ -66,6 +66,16 @@ class TrialRepository(
         return jdbcTemplate.query(sql, trialRowMapper, lawyerId)
     }
 
+    fun getTrialsByCaseId(caseId: Int): List<Trial> {
+        val sql = """
+            SELECT * 
+            FROM LawFirm.full_data_trial
+            WHERE case_id = ?
+        """.trimIndent()
+
+        return jdbcTemplate.query(sql, trialRowMapper, caseId)
+    }
+
     fun saveTrial(trial: TrialRequest): Trial {
         val sql = """
             INSERT INTO LawFirm.trial (

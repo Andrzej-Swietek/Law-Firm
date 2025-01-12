@@ -8,6 +8,8 @@ interface RulingService {
 
     fun getAllRulings(page: Int, size: Int): List<Ruling>
 
+    fun getRulingByCaseId(caseId: Int): List<Ruling>
+
     fun saveRuling(newRuling: Ruling): Ruling
 
     fun updateRuling(updatedRuling: Ruling): Ruling

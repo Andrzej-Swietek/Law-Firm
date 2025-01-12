@@ -48,6 +48,12 @@ class TrialController(private val trialService: TrialService) {
         return ResponseEntity.ok(trials)
     }
 
+    @GetMapping("/case/{id}")
+    fun getTrialByCaseId(@PathVariable id: Int):  ResponseEntity<List<Trial>> {
+        val trials = trialService.getTrialsByCaseId(id)
+        return ResponseEntity.ok(trials)
+    }
+
 
     @PostMapping
     fun saveTrial(@RequestBody trial: TrialRequest): ResponseEntity<Trial> {

@@ -36,6 +36,30 @@ class DecisionRepository(
         return jdbcTemplate.queryForObject(sql, decisionMapper, decisionId)
     }
 
+    fun getDecisionsByCaseId(caseId: Int): List<Decision> {
+        val sql = """
+            SELECT 
+                d.id as decision_id,
+                d.name as decision_name,
+                d.description as decision_description,
+                d.date as decision_date,
+                d.case_id as decision_case_id,
+                
+                c.id AS decision_case_id, 
+                c.name AS case_name, 
+                c.description AS case_description,
+                c.responsible_lawyer_id as case_responsible_lawyer_id,
+                c.client_id as case_client_id
+                
+            FROM LawFirm.decision d
+            LEFT JOIN LawFirm.case c ON d.case_id = c.id
+            LEFT JOIN LawFirm.client cl ON c.client_id = cl.id 
+            WHERE d.case_id = ?
+        """.trimIndent()
+
+        return jdbcTemplate.query(sql, decisionMapper, caseId)
+    }
+
     fun getAllDecisions(page: Int, size: Int): List<Decision> {
         val offset = (page - 1) * size
         val sql = """

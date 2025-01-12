@@ -18,6 +18,10 @@ class RulingServiceImpl(
         return rulingRepository.getAllRulings(page, size)
     }
 
+    override fun getRulingByCaseId(caseId: Int): List<Ruling> {
+        return rulingRepository.getRulingByCaseId(caseId)
+    }
+
     override fun saveRuling(newRuling: Ruling): Ruling {
         return rulingRepository.saveRuling(newRuling)
     }

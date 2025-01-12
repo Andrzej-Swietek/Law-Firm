@@ -1,4 +1,5 @@
 import type {Trial} from "$lib/interfaces/trial.interface";
+import type {Signature} from "$lib/interfaces/signature.interface";
 
 export interface RequiredDocumentForTrial {
     id: number;
@@ -7,6 +8,7 @@ export interface RequiredDocumentForTrial {
 
     trial?: Trial;
     document?: Document;
+    signatures?: Signature[]
 }
 
 export interface DocumentType {

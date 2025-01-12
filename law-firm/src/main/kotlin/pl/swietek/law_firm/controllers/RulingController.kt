@@ -20,6 +20,12 @@ class RulingController(private val rulingService: RulingService) {
         }
     }
 
+    @GetMapping("/case/{id}")
+    fun getRulingByCaseId(@PathVariable id: Int): ResponseEntity<List<Ruling>> {
+        val rulings = rulingService.getRulingByCaseId(id)
+        return ResponseEntity.ok(rulings)
+    }
+
     @GetMapping("/all")
     fun getAllRulings(
         @RequestParam(defaultValue = "1") page: Int,
