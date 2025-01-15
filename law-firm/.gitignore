@@ -40,4 +40,4 @@ out/
 .kotlin
 application.yml
 
-.env
+src/main/kotlin/pl/swietek/law_firm/.env

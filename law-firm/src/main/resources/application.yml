@@ -9,8 +9,8 @@ spring:
   datasource:
 #    url: jdbc:postgresql://localhost:5432/your_database
     url: jdbc:postgresql://ep-young-wave-61044232.us-east-2.aws.neon.tech/neondb?sslmode=require
-    username: mr.andi321
-    password: b3PD4NeOQWTX
+    username:  ${DB_USERNAME}
+    password:  ${DB_PASSWORD}
     driver-class-name: org.postgresql.Driver
   profiles:
     active: local
