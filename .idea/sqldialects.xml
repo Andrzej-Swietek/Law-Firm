@@ -4,6 +4,7 @@
     <file url="file://$PROJECT_DIR$/law-firm/src/main/kotlin/pl/swietek/law_firm/repositories/RequiredDocumentsForTrialRepository.kt" dialect="GenericSQL" />
     <file url="file://$PROJECT_DIR$/law-firm/src/main/resources/queries/DDL/functions.sql" dialect="PostgreSQL" />
     <file url="file://$PROJECT_DIR$/law-firm/src/main/resources/queries/DDL/schema.sql" dialect="PostgreSQL" />
+    <file url="file://$PROJECT_DIR$/law-firm/src/main/resources/queries/DDL/triggers.sql" dialect="PostgreSQL" />
     <file url="PROJECT" dialect="PostgreSQL" />
   </component>
 </project>

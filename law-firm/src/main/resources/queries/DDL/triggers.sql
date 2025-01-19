@@ -11,7 +11,7 @@
               AND t.trial_status_id IN (
                 SELECT id
                 FROM LawFirm.trial_status
-                WHERE name NOT IN ('Closed', 'Completed') -- Statusy oznaczające niedokończone sprawy
+                WHERE name NOT IN ('CLOSED', 'COMPLETED', 'FINISHED') -- Statusy oznaczające niedokończone sprawy
             )
         ) THEN
             RAISE EXCEPTION 'Cannot change court division for judge %; they have unresolved cases.', OLD.first_name || ' ' || OLD.last_name;
@@ -74,7 +74,7 @@
                      AND t.trial_status_id IN (
                        SELECT id
                        FROM LawFirm.trial_status
-                       WHERE name IN ('Closed', 'Completed') -- Tylko zakończone sprawy się nie liczą
+                       WHERE name IN ('CLOSED', 'COMPLETED', 'FINISHED') -- Tylko zakończone sprawy się nie liczą
                    )
                )
            ) >= 5 THEN
@@ -109,11 +109,11 @@
               AND t.trial_status_id NOT IN (
                 SELECT id
                 FROM LawFirm.trial_status
-                WHERE name IN ('Closed', 'Completed')
+                WHERE name IN ('CLOSED', 'COMPLETED', 'FINISHED')
             )
         ) THEN
             UPDATE LawFirm.case
-            SET description = 'Closed - All trials are completed.'
+            SET description = 'Closed - All trials are completed. ' || COALESCE(description, '')
             WHERE id = NEW.case_id;
         END IF;
 
@@ -166,7 +166,7 @@ BEGIN
           AND t.trial_status_id NOT IN (
             SELECT id
             FROM LawFirm.trial_status
-            WHERE name IN ('Closed', 'Completed')
+            WHERE name IN ('CLOSED', 'COMPLETED', 'FINISHED')
         )
     ) THEN
         RAISE EXCEPTION 'Cannot delete document %; it is required in an active trial.', OLD.id;

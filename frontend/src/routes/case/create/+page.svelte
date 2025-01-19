@@ -15,6 +15,7 @@
 
     import type {Case} from "$lib/interfaces/case.interface";
     import type {Client, Lawyer} from "$lib/interfaces/person.interface";
+    import type {ErrorResponse} from "$lib/interfaces/response.interface";
 
     let clients = $state<Client[]>([])
     let lawyers = $state<Lawyer[]>([])
@@ -28,8 +29,19 @@
 
     const handleSubmit = async () => {
         try {
-            const newClient = await createCase(caseItem);
-            if (newClient) {
+            const newCase = await createCase(caseItem);
+            if (newCase) {
+
+                if ('errors' in newCase) {
+                    const errorResponse = newCase as ErrorResponse;
+                    console.log(errorResponse)
+                    Object.entries(errorResponse.errors).forEach(([field, message]) => {
+                        toast.error(`${field}: ${message}`);
+                    });
+
+                    return;
+                }
+
                 toast.success("Case successfully created!");
                 goto("/case");
                 return;

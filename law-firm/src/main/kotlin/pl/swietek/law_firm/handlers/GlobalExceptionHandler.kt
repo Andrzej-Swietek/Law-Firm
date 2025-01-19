@@ -1,5 +1,6 @@
 package pl.swietek.law_firm.handlers
 
+import org.springframework.dao.DataAccessException
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.jdbc.BadSqlGrammarException
@@ -15,9 +16,9 @@ import pl.swietek.law_firm.exceptions.CourtNotFoundException
 import pl.swietek.law_firm.exceptions.DocumentNotFoundException
 import pl.swietek.law_firm.exceptions.ValidationException
 import java.util.function.Consumer
+import org.postgresql.util.PSQLException
 
 import pl.swietek.law_firm.handlers.ErrorResponse;
-import sun.security.timestamp.TSResponse.BAD_REQUEST
 
 @RestControllerAdvice
 class GlobalExceptionHandler {
@@ -88,6 +89,29 @@ class GlobalExceptionHandler {
         return ResponseEntity
             .status(HttpStatus.BAD_REQUEST)
             .body(errorResponse)
+    }
+
+    @ExceptionHandler(DataAccessException::class)
+    fun handleDataAccessException(e: DataAccessException): ResponseEntity<ErrorResponse> {
+        val cause = e.cause
+        if (cause is PSQLException) {
+            val message = cause.serverErrorMessage?.message ?: "Database error occurred."
+            return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(
+                    ErrorResponse(
+                        errors = mapOf("Database Error" to message)
+                    )
+                )
+        }
+
+        return ResponseEntity
+            .status(HttpStatus.INTERNAL_SERVER_ERROR)
+            .body(
+                ErrorResponse(
+                    errors = mapOf("Error" to "A database error occurred.")
+                )
+            )
     }
 
 //    @ExceptionHandler(HttpRequestMethodNotSupportedException::class)
