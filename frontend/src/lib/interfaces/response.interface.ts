@@ -4,3 +4,9 @@ export interface PaginatedResponse<T> {
     size: number;
     totalCount: number;
 }
+
+export interface ErrorResponse {
+    errors: {
+        [key: string]: string;
+    };
+}

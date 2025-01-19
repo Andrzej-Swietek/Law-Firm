@@ -49,7 +49,12 @@ class FetchApiClient {
 
         if (!response.ok) {
             const errorData = await response.json();
-            throw new Error(errorData.message || `Error ${response.status}: ${response.statusText}`);
+            throw {
+                status: response.status,
+                statusText: response.statusText,
+                data: errorData,
+            }
+            // throw new Error(errorData.message || `Error ${response.status}: ${response.statusText}`);
         }
 
         return response.headers.get('Content-Type')?.includes('application/json')

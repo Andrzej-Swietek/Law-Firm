@@ -45,7 +45,7 @@
 <PageHeader
         title="Decisions Management"
         description="Manage decisions"
-        onCreate={ ()=> goto("/cases/create") }
+        onCreate={ ()=> goto("/case/create") }
 />
 <EntityTable
         data={cases}

@@ -32,8 +32,11 @@ dependencies {
 	implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
 	implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.3.0")
+	implementation("io.micrometer:micrometer-registry-prometheus")
 	implementation("org.springframework.boot:spring-boot-starter-actuator")
 	implementation("io.github.cdimascio:dotenv-kotlin:6.4.1")
+	implementation("org.postgresql:postgresql:42.7.2")
+
 	compileOnly("org.projectlombok:lombok")
 	developmentOnly("org.springframework.boot:spring-boot-devtools")
 	implementation ("org.springframework.boot:spring-boot-starter-jdbc")
